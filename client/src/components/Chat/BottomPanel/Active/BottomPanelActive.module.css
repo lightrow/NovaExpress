@@ -1,0 +1,136 @@
+.topPanel {
+	box-sizing: border-box;
+	display: flex;
+	overflow-x: auto;
+	gap: 0.5rem;
+	font-family: var(--font-monospace);
+}
+
+.topPanel::-webkit-scrollbar {
+	display: none;
+}
+
+.topPanel {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.topPanel button {
+	flex-shrink: 0;
+	font-size: 0.8rem;
+}
+
+.timeButton {
+	margin-left: auto;
+}
+
+.bottomPanel {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	grid-template-areas: 'avatar input button';
+	justify-content: center;
+	margin-top: 0.5rem;
+	gap: 0.5rem;
+}
+
+.avatarButton {
+	box-sizing: border-box;
+	position: relative;
+	grid-area: avatar;
+	width: fit-content;
+	height: fit-content;
+	padding: 0;
+	overflow: hidden;
+	border: 1px solid var(--color-bg4);
+}
+
+.avatarButton > div {
+	width: 5rem !important;
+	height: 5rem !important;
+	border-radius: 0;
+}
+
+.avatarButton > div::after {
+	border-radius: 0;
+}
+
+.input {
+	grid-area: input;
+	flex: 1;
+	min-height: 100%;
+	margin-top: auto;
+	border-radius: 0.5rem;
+	font-size: 1rem;
+}
+
+.submitButton {
+	box-sizing: content-box;
+	grid-area: button;
+	flex-shrink: 0;
+	align-items: center;
+	align-self: stretch;
+	justify-content: center;
+	width: 4rem;
+	height: 5rem;
+	padding: 0;
+	border: 1px solid var(--color-bg4);
+	border-radius: 0.5rem;
+	font-family: var(--font-monospace);
+	cursor: pointer;
+}
+
+.submitButton svg {
+	width: 2rem;
+	height: 1.5rem;
+	filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+}
+
+.submitButton svg path {
+	fill: var(--color-text);
+}
+
+.submitButtonText {
+	display: none;
+}
+
+@media (max-width: 520px) {
+	.bottomPanel {
+		grid-template-areas: 'avatar input' 'button button';
+		gap: 0;
+		border-radius: 0.5rem;
+		background: var(--color-bg-darker);
+	}
+	.input {
+		border-width: 0 !important;
+		border-top-left-radius: 0;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+	.submitButton {
+		box-sizing: border-box;
+		justify-content: center;
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+		gap: 0;
+		border-width: 0 !important;
+		border-top-right-radius: 0;
+		border-top-left-radius: 0;
+	}
+	.submitButtonText {
+		display: block;
+		letter-spacing: 0.5rem;
+		filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+	}
+	.submitButton svg {
+		width: 1rem;
+		height: 1rem;
+	}
+	.avatarButton {
+		border: none;
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+}

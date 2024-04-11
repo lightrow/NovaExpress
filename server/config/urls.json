@@ -1,0 +1,6 @@
+{
+	"urlGenerate": "http://localhost:8080/completion",
+	"urlTokenize": "http://localhost:8080/tokenize",
+	"urlDetokenize": "http://localhost:8080/detokenize",
+	"urlPush": "https://ntfy.sh/USE_YOUR_OWN"
+}

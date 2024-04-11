@@ -1,0 +1,56 @@
+.container {
+	display: flex;
+	align-items: center;
+	height: 3rem;
+	margin: auto;
+	padding-left: 1rem;
+	gap: 0.5rem;
+	border-radius: 0.5rem;
+	background: var(--color-bg);
+	color: var(--color-text-faint);
+	cursor: pointer;
+}
+
+.input {
+	flex: 1;
+	max-width: fit-content;
+	margin-right: auto;
+	overflow: hidden;
+	font-size: 0.9rem;
+	direction: rtl;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.buttons {
+	display: flex;
+	height: 100%;
+}
+
+.button {
+	display: flex;
+	flex-shrink: 0;
+	justify-content: center;
+	width: 3.5rem;
+	height: 100%;
+	padding: 0;
+	background: none;
+}
+
+.button > div {
+	max-width: 2rem;
+}
+
+.button img {
+	filter: grayscale(1);
+}
+
+.spinnerIcon {
+	animation: rotate 1500ms linear infinite;
+}
+
+@keyframes rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}

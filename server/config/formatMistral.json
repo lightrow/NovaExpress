@@ -1,0 +1,10 @@
+{
+	"systemPrefix": "[INST]",
+	"inputPrefix": "[INST]{{persona}} said on {{timestamp}}:",
+	"outputPrefix": "{{persona}} said on {{timestamp}}:",
+	"outputLastPrefix": "",
+
+	"systemSuffix": "[/INST] ",
+	"inputSuffix": "[/INST] ",
+	"outputSuffix": "</s> "
+}

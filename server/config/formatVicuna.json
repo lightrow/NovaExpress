@@ -1,0 +1,10 @@
+{
+	"systemPrefix": "SYSTEM: \n",
+	"inputPrefix": "USER: \n",
+	"outputPrefix": "ASSISTANT: \n",
+	"outputLastPrefix": "",
+
+	"systemSuffix": "\n",
+	"inputSuffix": "\n",
+	"outputSuffix": "\n"
+}

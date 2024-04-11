@@ -1,0 +1,19 @@
+.chat {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}
+
+.list {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}
+
+.btnScrollToBottom {
+	z-index: 1;
+	position: fixed;
+	bottom: 7.6rem;
+	left: 50%;
+	transform: translateX(-50%);
+}

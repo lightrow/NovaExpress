@@ -1,0 +1,23 @@
+.container {
+	padding: 1rem;
+}
+
+.group {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+}
+
+.row {
+	grid-column: 1 / -1;
+}
+
+.list {
+	font-size: 0.9rem;
+}
+
+@media (max-width: 520px) {
+	.group {
+		grid-template-columns: 1fr;
+	}
+}

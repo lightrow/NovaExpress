@@ -1,0 +1,46 @@
+.container {
+	display: flex;
+	padding: 0.5rem;
+	gap: 0.5rem;
+	border-radius: 0.5rem;
+	background-color: var(--color-bg-darker);
+}
+
+.top {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.date {
+	white-space: pre-line;
+}
+
+.avatar {
+	width: 2.3rem;
+	height: 2.3rem;
+}
+
+.left {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: flex-start;
+	padding-left: 0.5rem;
+	text-align: left;
+}
+
+.trash {
+	flex-shrink: 0;
+	align-self: flex-start;
+	height: 3.5rem;
+	margin-left: auto;
+	background-color: #923737;
+}
+
+.typer {
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}

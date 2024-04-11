@@ -1,0 +1,19 @@
+.loading {
+	display: inline-block;
+	margin-top: 0.25rem;
+	margin-left: -0.2rem;
+	padding: 0 0.2rem;
+	color: var(--color-text);
+	font-weight: initial;
+	font-size: 1rem;
+	font-family: var(--font-message);
+	letter-spacing: 0.1rem;
+	animation: clip 1.5s steps(4) infinite;
+	clip-path: inset(0 20px 0 0);
+}
+
+@keyframes clip {
+	to {
+		clip-path: inset(0 0rem 0 0);
+	}
+}

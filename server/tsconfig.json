@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "esnext",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "dist",
+		"allowJs": true,
+		"lib": ["dom", "es6"],
+		"esModuleInterop": true,
+		"resolveJsonModule": true
+	},
+	"exclude": ["node_modules", "dist"],
+	"include": ["../types.ts", "src/**/*.ts", "tests/**/*.spec.ts", "configBak/index.ts"],
+	"files": ["src/index.ts", "./src/context.ts"]
+}

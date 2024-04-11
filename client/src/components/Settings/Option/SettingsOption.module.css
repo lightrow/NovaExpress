@@ -1,0 +1,31 @@
+.container {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+.labelContainer {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 0.5rem;
+}
+
+.label {
+	flex: 1;
+}
+
+.button {
+	align-self: stretch;
+	font-size: 0.8rem;
+	font-family: var(--font-monospace);
+}
+
+.input {
+	align-self: stretch;
+	font-size: 0.8rem;
+	font-family: var(--font-monospace);
+}

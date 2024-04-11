@@ -1,0 +1,62 @@
+.bar {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	max-width: var(--width);
+	height: 3rem;
+	margin: auto;
+	padding: 0 1rem;
+	gap: 0.25rem;
+}
+
+.container {
+	z-index: 2;
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	border-bottom: 1px solid var(--color-bg2);
+	background: var(--color-bg3);
+}
+
+.hamburgerIcon {
+	width: 1.5rem;
+	height: 1.5rem;
+	color: var(--color-primary);
+	cursor: pointer;
+}
+
+.menu {
+	z-index: 2;
+	position: fixed;
+	inset: 0;
+	padding: 1rem;
+	background-color: var(--color-bg);
+}
+
+.closeIcon {
+	width: 1.5rem;
+	height: 1.5rem;
+	padding-bottom: 1rem;
+	color: var(--color-primary);
+	cursor: pointer;
+}
+
+.routeButton:not(.active) {
+	background: none;
+}
+
+.mobileOnly {
+	display: none;
+}
+
+.separator {
+	margin: auto;
+}
+
+@media (max-width: 768px) {
+	.mobileOnly {
+		display: block;
+	}
+}

@@ -1,0 +1,16 @@
+.main {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: var(--width);
+	min-height: 100dvh;
+	margin: auto;
+	padding-top: 3rem;
+}
+
+.route {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+}

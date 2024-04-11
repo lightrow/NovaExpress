@@ -1,0 +1,10 @@
+{
+	"systemPrefix": "### Instruction:\n",
+	"inputPrefix": "### Input:\n",
+	"outputPrefix": "### Response:\n",
+	"outputLastPrefix": "",
+
+	"systemSuffix": "\n",
+	"inputSuffix": "\n",
+	"outputSuffix": "\n"
+}

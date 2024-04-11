@@ -1,0 +1,63 @@
+import {
+	ChatListEntry,
+	ChatMessage,
+	SocketServerEventEnum,
+} from '../../../../types';
+import { maybeSanitizeMessages } from '../../lib/sanitizeMessages';
+import { SocketServerService } from '../socket-server/socket.server.service';
+
+export class SocketClientService {
+	static sendPayloadToClients = (payload: object) => {
+		SocketServerService.connections.forEach((connection) =>
+			connection.send(JSON.stringify(payload))
+		);
+	};
+
+	static onStreamEnded = () => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.STREAM_END,
+		});
+	};
+
+	static onMessageReceived = (payload: ChatMessage) => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.MESSAGE_RECEIVED,
+			message: payload,
+		});
+	};
+
+	static onMessageChunkReceived = (payload: ChatMessage) => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.MESSAGE_CHUNK_RECEIVED,
+			message: maybeSanitizeMessages([payload])[0],
+		});
+	};
+
+	static onChatUpdate = (payload: ChatMessage[]) => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.MESSAGE_CHAT_RECEIVED,
+			chat: maybeSanitizeMessages(payload),
+		});
+	};
+
+	static onMessageDeleted = (message: ChatMessage) => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.MESSAGE_DELETED,
+			message: message,
+		});
+	};
+
+	static onCutoffPositionMeasured = (cutoffPosition: number) => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.CUTOFF_POSITION,
+			position: cutoffPosition,
+		});
+	};
+
+	static onChatsListReceived = (chatsList: ChatListEntry[]) => {
+		this.sendPayloadToClients({
+			type: SocketServerEventEnum.CHATS_LIST,
+			list: chatsList,
+		});
+	};
+}

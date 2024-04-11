@@ -1,0 +1,8 @@
+dist
+server/dist
+server/chats/*
+client/dist
+server/node_modules
+client/node_modules
+styletts/
+DS_Store

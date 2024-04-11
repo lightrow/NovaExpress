@@ -1,0 +1,32 @@
+.textarea {
+	box-sizing: border-box;
+	max-height: 25vh;
+	padding: 1rem;
+	overflow-y: auto;
+	border: 1px solid var(--color-bg3);
+	border-radius: 0.5rem;
+	outline: none;
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-size: 1rem;
+	line-height: 150%;
+	font-family: var(--font-message);
+	resize: none;
+}
+
+.textarea:focus,
+.textarea:hover {
+	border: 1px solid var(--color-highlight);
+}
+
+@media (max-width: 520px) {
+	.textarea:focus,
+	.textarea:hover {
+		border: 1px solid var(--color-bg3);
+	}
+
+	.textarea:active,
+	.textarea:focus {
+		background: var(--color-bg-darkest);
+	}
+}

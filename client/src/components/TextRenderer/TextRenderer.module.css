@@ -1,0 +1,33 @@
+.typer {
+	overflow: hidden;
+	color: var(--color-text);
+	font-weight: initial;
+	font-size: 1rem;
+	font-family: var(--font-message);
+	word-break: break-word;
+}
+
+.typer p {
+	word-wrap: break-word;
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+	color: var(--color-text);
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+.typer em {
+	color: var(--color-emph);
+}
+
+.typer code {
+	white-space: pre-wrap;
+}
+
+.command {
+	color: var(--color-emph);
+}
+
+.quote {
+	color: var(--color-quote);
+}

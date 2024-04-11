@@ -1,0 +1,184 @@
+.message {
+	display: flex;
+	position: relative;
+	width: 100%;
+	border-bottom: 1px solid var(--color-bg3);
+	background-color: var(--color-bg2);
+}
+
+.message.pruned {
+	opacity: 0.5;
+}
+
+.message.cutoffBorder {
+	border-top: 3px dashed orange;
+}
+
+.message.isLast {
+	border-bottom: none;
+}
+
+.message__left {
+	display: flex;
+	flex-shrink: 0;
+	flex-direction: column;
+	margin-bottom: auto;
+	padding: 1rem;
+	padding-right: 0;
+	padding-bottom: 0.5rem;
+	gap: 0.5rem;
+	user-select: none;
+}
+
+.message__index {
+	color: var(--color-text-faint);
+	font-size: 0.8rem;
+	line-height: 1rem;
+	text-align: center;
+}
+
+.message__right {
+	flex: 1;
+	width: 0;
+	padding: 0.5rem 1rem;
+}
+
+.message__text {
+	padding-top: 0.25rem;
+	padding-bottom: 0.75rem;
+}
+
+.message__top {
+	display: flex;
+	align-items: center;
+	margin-top: 0.5rem;
+	gap: 0.5rem;
+}
+
+.message__author {
+	display: flex;
+	align-items: center;
+	margin-top: 0;
+	padding: 0 0.5rem;
+	overflow: hidden;
+	border-radius: 0.25rem;
+	background: var(--color-bg3);
+	color: var(--color-highlight);
+	font-size: 0.9rem;
+	font-family: var(--font-monospace);
+	letter-spacing: 0.2rem;
+	text-align: right;
+	text-align: center;
+	text-transform: uppercase;
+	vertical-align: middle;
+	opacity: 0.5;
+}
+
+.message__author span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.user .message__author {
+	color: var(--color-text);
+}
+
+.char .message__author {
+	color: var(--color-primary);
+}
+
+.message__date {
+	position: absolute;
+	top: -0.6rem;
+	left: 50%;
+	margin-bottom: 0;
+	margin-left: auto;
+	padding: 0 1rem;
+	transform: translateX(-50%);
+	background: var(--color-bg2);
+	color: var(--color-text-faint);
+	font-weight: normal;
+	font-size: 0.8rem;
+	font-family: var(--font-message-date);
+}
+
+.message__actions {
+	display: flex;
+	margin-top: -1px;
+	margin-left: auto;
+}
+
+.message__actions svg {
+	padding: 0.5rem;
+	border-radius: 0.25rem;
+	color: var(--color-text-faint);
+	cursor: pointer;
+}
+
+.message__actions svg:hover {
+	color: var(--color-highlight);
+}
+
+.message__editContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+	gap: 0.5rem;
+}
+
+.message__editContainer textarea {
+	outline: none;
+}
+
+.message__edit__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.variantsPanel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 0.25rem;
+	border-radius: 0.5rem;
+}
+
+.variant {
+	flex: 0.8;
+	color: var(--color-text-light);
+	font-weight: bold;
+	text-align: center;
+}
+
+.buttonVariantSeparator {
+	width: 1px;
+}
+
+.buttonVariant:first-child {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.buttonVariant:last-child {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.buttonVariant {
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	min-height: 1.5rem;
+	padding: 0;
+	background: var(--color-bg3);
+	color: var(--color-text-faint);
+}
+
+.buttonVariant.variantDisabled {
+	cursor: not-allowed;
+	opacity: 0.3;
+	pointer-events: none;
+}
