@@ -73,7 +73,7 @@ export const Message: FC<{
 
 		const observer = new ResizeObserver(([el]) => {
 			if (getScrollBottom() < 100) {
-				//el.target.scrollIntoView({ behavior: 'smooth', block: 'end' });
+				el.target.scrollIntoView({ behavior: 'smooth', block: 'end' });
 			}
 		});
 		observer.observe(ref.current!);

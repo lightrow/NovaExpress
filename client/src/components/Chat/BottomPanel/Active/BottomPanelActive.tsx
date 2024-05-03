@@ -5,16 +5,12 @@ import { ChatMessage } from '../../../../../../types';
 import { checkIsMobile } from '../../../../utils/checkIsMobile';
 import { BusEventEnum, EventBus } from '../../../../utils/eventBus';
 import { getPersonaName } from '../../../../utils/getPersonaName';
+import { getScrollBottom } from '../../../../utils/getScrollBottom';
 import { Avatar } from '../../../Avatar/Avatar';
 import { TextInput } from '../../../TextInput/TextInput';
 import { useGlobalStore } from '../../../store';
 import { useActions } from '../../useActions';
 import styles from './BottomPanelActive.module.css';
-import { getScrollBottom } from '../../../../utils/getScrollBottom';
-import { animate, easeInOutCubic } from '../../../../utils/animate';
-import { interpolate } from '../../../../utils/interpolate';
-import { scroll } from '../../../../utils/scroll';
-import { checkIsGarbageBrowser } from '../../../../utils/checkIsGarbageBrowser';
 
 export const BottomPanelActive: FC = () => {
 	const isSpecial = useGlobalStore((s) => s.isSpecialMode);

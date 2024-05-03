@@ -34,6 +34,9 @@ function App() {
 			// switch is overrated...
 			if (obj.type === SocketServerEventEnum.MESSAGE_RECEIVED) {
 				addMessage(obj.message);
+				setTimeout(() => {
+					toggleIsSending(false);
+				}, 0);
 			}
 			if (obj.type === SocketServerEventEnum.MESSAGE_CHUNK_RECEIVED) {
 				setIsInferring(true);
@@ -47,9 +50,6 @@ function App() {
 					key: BusEventEnum.CHAT_RECEIVED,
 					data: obj.chat,
 				});
-				setTimeout(() => {
-					toggleIsSending(false);
-				}, 0);
 				loadChat(obj.chat);
 			}
 			if (obj.type === SocketServerEventEnum.STREAM_END) {
