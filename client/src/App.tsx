@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { SocketEventEnum, SocketServerEventEnum } from '../../types';
 import styles from './App.module.css';
 import { Chat } from './components/Chat/Chat';
@@ -63,6 +63,10 @@ function App() {
 		});
 		socket.connect(socketUrl);
 	}, [socketUrl]);
+
+	useLayoutEffect(() => {
+		window.scrollTo({ top: 0, behavior: 'instant' });
+	}, [route]);
 
 	return (
 		<main className={styles.main}>
