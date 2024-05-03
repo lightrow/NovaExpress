@@ -114,7 +114,7 @@ export const useGlobalStore = create(
 				set((state) => {
 					state.ttsUrl = url;
 				}),
-			ttsUrl: 'http://192.168.178.25:8001/api/v1/static',
+			ttsUrl: 'http://localhost:8001/api/v1/static',
 
 			updateTTSVolume: (volume) =>
 				set((state) => {
@@ -138,7 +138,7 @@ export const useGlobalStore = create(
 				set((state) => {
 					state.wsUrl = url;
 				}),
-			wsUrl: 'ws://192.168.178.25:3001',
+			wsUrl: 'ws://localhost:3001',
 
 			updateChatsList: (list) =>
 				set((state) => {
