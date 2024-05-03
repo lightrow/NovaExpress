@@ -42,10 +42,11 @@ export const Message: FC<{
 	const [isEdited, setIsEdited] = useState(false);
 	const [lastMessagePadding, setLastMessagePadding] = useState(96);
 	const isInferring = useGlobalStore((s) => s.isInferring);
+	const isSending = useGlobalStore((s) => s.isSending);
 	const editInput = useRef<HTMLTextAreaElement>(null);
 	const cutoffPosition = useGlobalStore((s) => s.cutoffPosition);
 
-	const isNewMessage = isInferring && isLast && !isEdited;
+	const isNewMessage = isInferring && isLast && !isEdited && !isSending;
 
 	useTts(message, isNewMessage);
 
@@ -190,7 +191,8 @@ export const Message: FC<{
 				[styles.pruned]: cutoffPosition > index || message.state === 'pruned',
 			})}
 			style={{
-				paddingBottom: isLast ? lastMessagePadding : 0,
+				paddingBottom: isLast ? (checkIsMobile() ? 96 : lastMessagePadding) : 0,
+				marginBottom: isLast && checkIsMobile() ? -96 : 0,
 			}}
 		>
 			<div className={styles.message__left}>

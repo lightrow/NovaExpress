@@ -4,6 +4,7 @@ export enum BusEventEnum {
 	CHAT_RECEIVED = 'chatReceived',
 	DIALOG = 'dialog',
 	BOTTOM_PANEL_HEIGHT = 'bottomPanelHeight',
+	SENDING_MESSAGE = 'sendingMessage',
 }
 
 const RESPONSE_KEY = ':res';

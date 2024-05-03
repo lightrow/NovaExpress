@@ -6,6 +6,7 @@ import { BottomPanelActive } from './Active/BottomPanelActive';
 import styles from './BottomPanel.module.css';
 import { BottomPanelInactive } from './Inactive/BottomPanelInactive';
 import { useSpeech } from './useSpeech';
+import { checkIsMobile } from '../../../utils/checkIsMobile';
 
 export const BottomPanel: FC = () => {
 	const isInferring = useGlobalStore((s) => s.isInferring);
@@ -56,7 +57,9 @@ export const BottomPanel: FC = () => {
 	return (
 		<>
 			<div
-				className={classNames(styles.container)}
+				className={classNames(styles.container, {
+					[styles.static]: isActive && checkIsMobile(),
+				})}
 				onClick={(e) => e.stopPropagation()}
 			>
 				<div className={styles.card}>

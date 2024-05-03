@@ -1,25 +1,29 @@
 import { debounce } from 'lodash';
 import { ChatMessage } from '../../../../types';
+import { createNewMessage } from '../../lib/createNewMessage';
 import { BusEventEnum, EventBus } from '../../lib/eventBus';
 import { generate } from '../../lib/generate';
 import { replaceTemplates } from '../../lib/replaceTemplates';
 import { generateChatFilename } from '../../util/generateChatFilename';
+import { AffinityService } from '../affinity/affinity.service';
 import { Config } from '../config/config.service';
 import { FileService } from '../fs/fs.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
-import { AffinityService } from '../affinity/affinity.service';
-import { createNewMessage } from '../../lib/createNewMessage';
 
 export class ChatService {
 	static LAST_CHAT_ID_PATH = 'lastActiveChat.txt';
 	static CHATS_DIR = 'chats';
 
-	static addMessageAndContinue = debounce((message: ChatMessage) => {
-		this.addMessage(message);
-		generate([...this.currentChat]);
-	}, 100);
+	static addMessageAndContinue = debounce(
+		(message: ChatMessage) => {
+			this.addMessage(message);
+			generate([...this.currentChat]);
+		},
+		500,
+		{ leading: false, trailing: true }
+	);
 
-	static addMessageAndReply = (message: ChatMessage) => {
+	static addMessageAndReply = async (message: ChatMessage) => {
 		this.addMessage(message);
 		this.addMessageAndContinue(createNewMessage('char'));
 	};

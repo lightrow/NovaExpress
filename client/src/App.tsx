@@ -20,6 +20,7 @@ function App() {
 	const updateCutoffPosition = useGlobalStore((s) => s.updateCutoffPosition);
 	const updateChatsList = useGlobalStore((s) => s.updateChatsList);
 	const toggleSpecial = useGlobalStore((s) => s.toggleSpecialMode);
+	const toggleIsSending = useGlobalStore((s) => s.toggleIsSending);
 	const route = useGlobalStore((s) => s.route);
 	const socket = useServerSocket();
 	const socketUrl = useGlobalStore((s) => s.wsUrl);
@@ -46,6 +47,9 @@ function App() {
 					key: BusEventEnum.CHAT_RECEIVED,
 					data: obj.chat,
 				});
+				setTimeout(() => {
+					toggleIsSending(false);
+				}, 0);
 				loadChat(obj.chat);
 			}
 			if (obj.type === SocketServerEventEnum.STREAM_END) {

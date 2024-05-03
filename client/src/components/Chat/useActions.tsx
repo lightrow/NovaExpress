@@ -39,6 +39,7 @@ const useCreateActions = () => {
 	const setSpecial = useGlobalStore((s) => s.toggleSpecialMode);
 	const isSpecial = useGlobalStore((s) => s.isSpecialMode);
 	const inputValueRef = useUpdatedRef(inputValue);
+	const toggleIsSending = useGlobalStore((s) => s.toggleIsSending);
 
 	// 1. submit and reply
 	// 2. submit and continue
@@ -69,6 +70,7 @@ const useCreateActions = () => {
 		};
 		setIsInferring(true);
 		socket.send(JSON.stringify(message));
+		toggleIsSending(true);
 	};
 
 	const submitAndContinue = (persona: ChatMessage['persona']) => {
@@ -78,6 +80,7 @@ const useCreateActions = () => {
 		};
 		setIsInferring(true);
 		socket.send(JSON.stringify(message));
+		toggleIsSending(true);
 	};
 
 	const submitAndDoNothing = (persona: ChatMessage['persona']) => {
@@ -86,6 +89,7 @@ const useCreateActions = () => {
 			message: createNewMessage(persona, inputValueRef.current || '...'),
 		};
 		socket.send(JSON.stringify(message));
+		toggleIsSending(true);
 	};
 
 	const continueFromLast = () => {

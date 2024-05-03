@@ -14,6 +14,9 @@ export interface AppStore {
 	setIsInferring: (i: boolean) => void;
 	isInferring: boolean;
 
+	isSending: boolean;
+	toggleIsSending: (v: boolean) => void;
+
 	setMessages: (m: ChatMessage[]) => void;
 	updateMessage: (m: ChatMessage) => void;
 	deleteMessage: (m: ChatMessage) => void;
@@ -150,6 +153,12 @@ export const useGlobalStore = create(
 			toggleSpecialMode: (val) =>
 				set((state) => {
 					state.isSpecialMode = val !== undefined ? val : !state.isSpecialMode;
+				}),
+
+			isSending: false,
+			toggleIsSending: (val) =>
+				set((state) => {
+					state.isSending = val !== undefined ? val : !state.isSending;
 				}),
 		})),
 		{
