@@ -1,17 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { SocketEventEnum, SocketServerEventEnum } from '../../types';
+import styles from './App.module.css';
 import { Chat } from './components/Chat/Chat';
 import { Chats } from './components/Chats/Chats';
+import { Dialogs } from './components/Dialogs/Dialogs';
 import { Nav } from './components/Nav/Nav';
 import { Pins } from './components/Pins/Pins';
 import { RCTExposer } from './components/RCTExposer/RCTExposer';
 import { Settings } from './components/Settings/Settings';
 import { useServerSocket } from './components/socket';
 import { Route, useGlobalStore } from './components/store';
-import { AnimatePresence, easeOut, motion } from 'framer-motion';
-import styles from './App.module.css';
 import { BusEventEnum, EventBus } from './utils/eventBus';
-import { Dialogs } from './components/Dialogs/Dialogs';
 
 function App() {
 	const addMessage = useGlobalStore((s) => s.updateMessage);
@@ -43,11 +42,11 @@ function App() {
 				deleteMessage(obj.message);
 			}
 			if (obj.type === SocketServerEventEnum.MESSAGE_CHAT_RECEIVED) {
-				loadChat(obj.chat);
 				EventBus.send({
 					key: BusEventEnum.CHAT_RECEIVED,
 					data: obj.chat,
 				});
+				loadChat(obj.chat);
 			}
 			if (obj.type === SocketServerEventEnum.STREAM_END) {
 				setIsInferring(false);

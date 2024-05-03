@@ -1,5 +1,9 @@
 import { FC } from 'react';
-import { ChatListEntry, SocketEventEnum } from '../../../../../types';
+import {
+	ChatListEntry,
+	ChatMessage,
+	SocketEventEnum,
+} from '../../../../../types';
 import { FaTrash } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { TextRenderer } from '../../TextRenderer/TextRenderer';
@@ -23,10 +27,13 @@ export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 	};
 
 	const handleLoad = () => {
-		const sub = EventBus.on(BusEventEnum.CHAT_RECEIVED, () => {
-			setRoute(Route.CHAT);
-			sub.unsubscribe();
-		});
+		const sub = EventBus.on<ChatMessage[]>(
+			BusEventEnum.CHAT_RECEIVED,
+			(event) => {
+				setRoute(Route.CHAT);
+				sub.unsubscribe();
+			}
+		);
 		socket.send(
 			JSON.stringify({
 				type: SocketEventEnum.LOAD_CHAT,

@@ -1,10 +1,11 @@
 import { FC } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import { SocketEventEnum } from '../../../../types';
+import { ChatMessage, SocketEventEnum } from '../../../../types';
 import { useServerSocket } from '../socket';
 import { Route, useGlobalStore } from '../store';
 import styles from './Chats.module.css';
 import { ChatsEntry } from './Entry/ChatsEntry';
+import { EventBus, BusEventEnum } from '../../utils/eventBus';
 
 export const Chats: FC = () => {
 	const list = useGlobalStore((s) => s.chatsList);
@@ -12,13 +13,19 @@ export const Chats: FC = () => {
 	const setRoute = useGlobalStore((s) => s.setRoute);
 
 	const handleNew = () => {
+		const sub = EventBus.on<ChatMessage[]>(
+			BusEventEnum.CHAT_RECEIVED,
+			(event) => {
+				setRoute(Route.CHAT);
+				sub.unsubscribe();
+			}
+		);
 		socket.send(
 			JSON.stringify({
 				type: SocketEventEnum.LOAD_CHAT,
 				chatId: new Date().getTime(),
 			})
 		);
-		setRoute(Route.CHAT);
 	};
 
 	return (

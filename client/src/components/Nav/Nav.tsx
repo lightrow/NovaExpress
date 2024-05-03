@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { FC, useCallback } from 'react';
+import { FC, memo, useCallback } from 'react';
 import { FaBroom, FaComment, FaMapPin } from 'react-icons/fa';
 import { FaBroomBall, FaGear, FaRegRectangleList } from 'react-icons/fa6';
 import { Route, useGlobalStore } from '../store';
@@ -8,7 +8,7 @@ import { useServerSocket } from '../socket';
 import { SocketEventEnum } from '../../../../types';
 import { BusEventEnum, EventBus } from '../../utils/eventBus';
 
-export const Nav: FC = () => {
+export const Nav: FC = memo(() => {
 	const currentRoute = useGlobalStore((s) => s.route);
 	const setRoute = useGlobalStore((s) => s.setRoute);
 	const socket = useServerSocket();
@@ -72,4 +72,4 @@ export const Nav: FC = () => {
 			</div>
 		</div>
 	);
-};
+});

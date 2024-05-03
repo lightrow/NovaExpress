@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, memo, useEffect, useRef, useState } from 'react';
 import { checkIsElementInViewport } from '../../utils/checkIsElementInViewport';
 import { Message } from '../Message/Message';
 import { useGlobalStore } from '../store';
@@ -9,25 +9,25 @@ import { ActionsProvider } from './useActions';
 import useUpdatedRef from '../../hooks/useUpdatedRef';
 import { HeightStabilizer } from '../HeightStabilizer/HeightStabilizer';
 
-export const Chat: FC = () => {
+export const Chat: FC = memo(() => {
 	const messages = useGlobalStore((s) => s.messages);
 	const listRef = useRef<HTMLDivElement>(null);
 
 	const [visibleItems, setVisibleItems] = useState([]);
 
+	const scrollToLastMessage = () => {
+		Array.from(listRef.current.children)
+			.slice(-1)[0]
+			.scrollIntoView({ behavior: 'instant', block: 'end' });
+	};
+
 	useEffect(() => {
-		window.scrollTo({
-			top: document.documentElement.scrollHeight,
-			behavior: 'instant',
-		});
+		scrollToLastMessage();
 	}, []);
 
 	useEffect(() => {
 		if (messages.length > messagesLengthRef.current) {
-			window.scrollTo({
-				top: document.documentElement.scrollHeight,
-				behavior: 'smooth',
-			});
+			scrollToLastMessage();
 		}
 		const handleScroll = () => {
 			const list = listRef.current;
@@ -79,4 +79,4 @@ export const Chat: FC = () => {
 			</div>
 		</HeightStabilizer>
 	);
-};
+});

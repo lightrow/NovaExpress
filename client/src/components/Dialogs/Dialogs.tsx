@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { Dialog } from './Dialog/Dialog';
 import { BusEventEnum, EventBus } from '../../utils/eventBus';
 
@@ -7,7 +7,7 @@ export interface DialogData {
 	actions: { fn?: () => Promise<void>; label: string }[];
 }
 
-export const Dialogs: FC = () => {
+export const Dialogs: FC = memo(() => {
 	const [dialogs, setDialogs] = useState<DialogData[]>([]);
 
 	useEffect(() => {
@@ -42,4 +42,4 @@ export const Dialogs: FC = () => {
 			))}
 		</>
 	);
-};
+});
