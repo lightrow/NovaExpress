@@ -15,14 +15,17 @@ export const Chat: FC = memo(() => {
 
 	const [visibleItems, setVisibleItems] = useState([]);
 
-	const scrollToLastMessage = () => {
+	const scrollToLastMessage = (instant?: boolean) => {
 		Array.from(listRef.current.children)
 			.slice(-1)[0]
-			.scrollIntoView({ behavior: 'instant', block: 'end' });
+			.scrollIntoView({
+				behavior: instant ? 'instant' : 'smooth',
+				block: 'end',
+			});
 	};
 
 	useEffect(() => {
-		scrollToLastMessage();
+		scrollToLastMessage(true);
 	}, []);
 
 	useEffect(() => {
