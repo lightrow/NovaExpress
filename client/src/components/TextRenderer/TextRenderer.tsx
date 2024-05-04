@@ -139,11 +139,14 @@ export const TextRenderer: FC<{
 					.trim();
 
 				let hasLonelyAsterisk = false;
-
-				// ignore asterisks used as multiplication sign
-				const startAsterisks = formattedLine.match(/\*[^\s]/g)?.length ?? 0;
-				const endAsterisks = formattedLine.match(/[^\s]\*/g)?.length ?? 0;
-				if (startAsterisks > endAsterisks) {
+				// ignore asterisks used as multiplication sign (surrounded by spaces)
+				let lonelyAsterisks = 0;
+				lonelyAsterisks += formattedLine.match(/\s\*\S/g)?.length || 0;
+				lonelyAsterisks += formattedLine.match(/\S\*\s/g)?.length || 0;
+				lonelyAsterisks += formattedLine.match(/\S\*\S/g)?.length || 0;
+				lonelyAsterisks += formattedLine.match(/^\*\S/g)?.length || 0;
+				lonelyAsterisks += formattedLine.match(/\S\*$/g)?.length || 0;
+				if (lonelyAsterisks % 2 !== 0) {
 					hasLonelyAsterisk = true;
 				}
 				let hasLonelyQuote = false;
