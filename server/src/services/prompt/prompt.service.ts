@@ -52,6 +52,14 @@ export class PromptService {
 			Context.cutoffInterval =
 				Math.min(chatSlice.length, Context.cutoffInterval) - 20;
 			Context.cutoffKeep = Math.floor(Context.cutoffInterval / 2);
+			if (Context.cutoffInterval <= 0) {
+				Context.cutoffInterval = 1000;
+				Context.cutoffKeep = 500;
+				console.error(
+					`Not enough context to continue (current: ${Config.Chat.maxContext}). Try increasing maxContext or reduce system prompt size/amount of pinned messages.`
+				);
+				throw Error('OUT_OF_CONTEXT');
+			}
 			console.info(
 				`Prompt too long, adjusting cutoff to: ${Context.cutoffInterval}/${Context.cutoffKeep} and rebuilding`
 			);
@@ -251,7 +259,8 @@ export class PromptService {
 				createNewMessage(
 					'narrator',
 					formatAsDirection(prompts.narrator.join(' ')),
-					chatSlice[chatSlice.length - Config.Chat.narratorPromptPosition - 1]?.date
+					chatSlice[chatSlice.length - Config.Chat.narratorPromptPosition - 1]
+						?.date
 				)
 			);
 		prompts.user &&

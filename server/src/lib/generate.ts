@@ -22,13 +22,13 @@ export const generate = async (chat: ChatMessage[]) => {
 	const message = chat.slice(-1)[0];
 	const id = message.date;
 	const idx = message.activeIdx;
-	const prompt = await PromptService.buildPrompt(maybeSanitizeMessages(chat));
-
-	const handleChunk = (chunk: string) => {
-		ChatService.updateMessageWithChunk(id, chunk);
-	};
-
 	try {
+		const prompt = await PromptService.buildPrompt(maybeSanitizeMessages(chat));
+
+		const handleChunk = (chunk: string) => {
+			ChatService.updateMessageWithChunk(id, chunk);
+		};
+
 		await LlmService.sendPrompt(prompt, handleChunk);
 		const promptMessage = ChatService.currentChat.find((m) => m.date === id);
 		EventBus.send({
@@ -43,6 +43,7 @@ export const generate = async (chat: ChatMessage[]) => {
 		SocketClientService.onStreamEnded();
 		processing = false;
 	} catch (error) {
+		console.error(error);
 		const promptMessage = ChatService.currentChat.find((m) => m.date === id);
 		if (promptMessage.messages[idx] === '') {
 			promptMessage.messages.splice(idx, 1);

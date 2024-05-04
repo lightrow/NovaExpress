@@ -1,8 +1,6 @@
 import { Agent, fetch, RequestInit, setGlobalDispatcher } from 'undici';
-import { Context } from '../../context';
 import wait from '../../util/wait';
 import { Config } from '../config/config.service';
-import { ChatService } from '../chat/chat.service';
 
 setGlobalDispatcher(new Agent({ bodyTimeout: 1_200_000 }));
 
