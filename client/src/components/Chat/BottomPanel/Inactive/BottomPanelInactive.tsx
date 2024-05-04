@@ -40,7 +40,7 @@ export const BottomPanelInactive: FC = () => {
 			<div onClick={(e) => e.stopPropagation()} className={styles.buttons}>
 				{isInferring ? (
 					<button className={styles.button} onClick={stop}>
-						<FaSpinner className={styles.spinnerIcon} />
+						<FaStop />
 					</button>
 				) : (
 					<>

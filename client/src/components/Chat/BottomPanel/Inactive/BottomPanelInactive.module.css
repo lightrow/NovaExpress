@@ -45,10 +45,6 @@
 	filter: grayscale(1);
 }
 
-.spinnerIcon {
-	animation: rotate 1500ms linear infinite;
-}
-
 @keyframes rotate {
 	100% {
 		transform: rotate(360deg);
