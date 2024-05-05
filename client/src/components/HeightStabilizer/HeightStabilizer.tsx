@@ -16,7 +16,7 @@ export const HeightStabilizer: FC<PropsWithChildren> = ({ children }) => {
 				contentHeight.current < document.documentElement.scrollTop
 			) {
 				minHeight.current = contentHeight.current;
-				parentRef.current.style.minHeight = '';
+				parentRef.current.style.minHeight = contentHeight.current + 'px';
 			}
 		};
 		window.addEventListener('scroll', handleScroll);

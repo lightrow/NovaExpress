@@ -4,6 +4,8 @@ import {
 	SocketServerEventEnum,
 } from '../../../../types';
 import { maybeSanitizeMessages } from '../../lib/sanitizeMessages';
+import { LlmService } from '../llm/llm.service';
+import { PromptService } from '../prompt/prompt.service';
 import { SocketServerService } from '../socket-server/socket.server.service';
 
 export class SocketClientService {
@@ -38,6 +40,9 @@ export class SocketClientService {
 			type: SocketServerEventEnum.MESSAGE_CHAT_RECEIVED,
 			chat: maybeSanitizeMessages(payload),
 		});
+		// we no longer know, until next prompt.
+		PromptService.setCutoffInterval(1000);
+		this.onCutoffPositionMeasured(0);
 	};
 
 	static onMessageDeleted = (message: ChatMessage) => {

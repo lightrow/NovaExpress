@@ -49,27 +49,33 @@ export class PromptService {
 
 		const tokens = await LlmService.tokenize(prompt);
 		if (tokens.length >= Config.Chat.maxContext) {
-			Context.cutoffInterval =
-				Math.min(chatSlice.length, Context.cutoffInterval) - 20;
-			Context.cutoffKeep = Math.floor(Context.cutoffInterval / 2);
+			this.setCutoffInterval(
+				Math.min(chatSlice.length, Context.cutoffInterval) - 20
+			);
 			if (Context.cutoffInterval <= 0) {
-				Context.cutoffInterval = 1000;
-				Context.cutoffKeep = 500;
+				this.setCutoffInterval(1000);
 				console.error(
 					`Not enough context to continue (current: ${Config.Chat.maxContext}). Try increasing maxContext or reduce system prompt size/amount of pinned messages.`
 				);
 				throw Error('OUT_OF_CONTEXT');
 			}
 			console.info(
-				`Prompt too long, adjusting cutoff to: ${Context.cutoffInterval}/${Context.cutoffKeep} and rebuilding`
+				`Hit context limit, adjusting cutoff to: ${Context.cutoffInterval}/${Context.cutoffKeep} and retrying`
 			);
 			return this.buildPrompt(chat);
 		}
 		console.log('\n\n############### PROMPT #################\n\n');
-		console.log(`PROMPT (${tokens.length}):...\n${prompt.slice()}`);
+		console.log(`PROMPT (${tokens.length}):...\n${prompt.slice(-200)}`);
 		SocketClientService.onCutoffPositionMeasured(cutoffIndex);
 
+		// cutoff point should recover slowly on successful prompts
+		this.setCutoffInterval(Context.cutoffInterval + 5);
 		return prompt;
+	};
+
+	static setCutoffInterval = (idx: number) => {
+		Context.cutoffInterval = idx;
+		Context.cutoffKeep = Math.floor(idx / 2);
 	};
 
 	static injectDayChangeMesssages(messages: ChatMessage[]) {
@@ -236,7 +242,7 @@ export class PromptService {
 				chatSlice.length - Config.Chat.otherPromptsPosition,
 				0,
 				createNewMessage(
-					'narrator',
+					'user',
 					formatAsDirection(prompts.common.join(' ')),
 					chatSlice[chatSlice.length - Config.Chat.otherPromptsPosition - 1]
 						?.date
@@ -247,7 +253,7 @@ export class PromptService {
 				chatSlice.length - Config.Chat.charPromptPosition,
 				0,
 				createNewMessage(
-					'narrator',
+					'user',
 					formatAsDirection(prompts.char.join(' ')),
 					chatSlice[chatSlice.length - Config.Chat.charPromptPosition - 1]?.date
 				)
@@ -257,7 +263,7 @@ export class PromptService {
 				chatSlice.length - Config.Chat.narratorPromptPosition,
 				0,
 				createNewMessage(
-					'narrator',
+					'user',
 					formatAsDirection(prompts.narrator.join(' ')),
 					chatSlice[chatSlice.length - Config.Chat.narratorPromptPosition - 1]
 						?.date
@@ -268,7 +274,7 @@ export class PromptService {
 				chatSlice.length - 1,
 				0,
 				createNewMessage(
-					'narrator',
+					'user',
 					formatAsDirection(prompts.user.join(' ')),
 					chatSlice[chatSlice.length - 2]?.date
 				)

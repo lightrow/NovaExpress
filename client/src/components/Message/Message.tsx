@@ -186,7 +186,7 @@ export const Message: FC<{
 		<div
 			ref={ref}
 			className={classNames(styles.message, styles[message.persona], {
-				[styles.cutoffBorder]: cutoffPosition === index,
+				[styles.cutoffBorder]: cutoffPosition === index && index > 0,
 				[styles.isLast]: isLast,
 				[styles.pruned]: cutoffPosition > index || message.state === 'pruned',
 			})}
