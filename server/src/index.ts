@@ -36,5 +36,5 @@ wss.on('connection', function connection(client) {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT);

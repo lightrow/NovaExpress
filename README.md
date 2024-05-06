@@ -29,7 +29,7 @@ Server acts as a websockets-based middleware between client and llama.cpp server
 
 ### Configuration
 
-config files in `./server/config/` are responsible for mostly everything. Client also uses `./server/config/chatConfig.json` to retrieve names, thus, after changing the names, you should rebuild the client if you want names to update in the client as well.
+Config files are split between `./server/config/` and chat-specific configs at `./server/data/chats/your_chat_id/`. Default chat config and assets are in `./server/data/chats/default/` directory
 
 ### Notes
 
@@ -66,21 +66,22 @@ Additional templates:
 
 ### Running
 
-#### Server
+#### Build client
+```
+cd client
+npm i
+npm run build
+```
+
+#### Run server
 ```
 cd server
 npm i
 npm run dev
 ```
 
-Server also serves the client React PWA from ./dist directory at `localhost:3001`. To rebuild the app.
+The app will be available at `http://localhost:3001`. Don't forget to update WS and server urls in app settings if running on a different device.
 
-####
-```
-cd client
-npm i
-npm run build
-```
 
 ### Roadmap
 * ~~Add confirmation prompt to purging all unpinned messages from chat (brush icon in top right corner)~~
