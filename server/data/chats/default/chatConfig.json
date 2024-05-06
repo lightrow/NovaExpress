@@ -4,8 +4,8 @@
 	"charPromptPosition": 2,
 	"otherPromptsPosition": 2,
 
-	"charName": "User",
-	"userName": "Assistant",
+	"charName": "Assistant",
+	"userName": "User",
 	"narratorName": "Observer",
 
 	"messagePrefixTemplate": "",
