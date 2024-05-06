@@ -14,6 +14,11 @@ export class PromptService {
 	static DAY_START_SHIFT = 6 * 60 * 60 * 1000; // assume day starts at 06:00AM, otherwise AI gets confused
 
 	static buildPrompt = async (chat: ChatMessage[]) => {
+		if (chat.length % Context.cutoffInterval === 0) {
+			// Reset the cutoff params to let them be reevaluated anew.
+			// Can only be done at time of context shift.
+			this.setCutoffInterval(1000);
+		}
 		const chatFiltered = chat.filter((m) => m.state !== 'pruned');
 		const cutoffIndex = Math.max(
 			0,
@@ -65,11 +70,9 @@ export class PromptService {
 			return this.buildPrompt(chat);
 		}
 		console.log('\n\n############### PROMPT #################\n\n');
-		console.log(`PROMPT (${tokens.length}):...\n${prompt.slice(-200)}`);
+		console.log(`PROMPT (${tokens.length}):...\n${prompt.slice()}`);
 		SocketClientService.onCutoffPositionMeasured(cutoffIndex);
 
-		// cutoff point should recover slowly on successful prompts
-		this.setCutoffInterval(Context.cutoffInterval + 5);
 		return prompt;
 	};
 
@@ -97,6 +100,7 @@ export class PromptService {
 			}
 			result.push(messages[i]);
 		}
+
 		messages = result;
 	}
 
