@@ -4,9 +4,9 @@
 	"charPromptPosition": 2,
 	"otherPromptsPosition": 2,
 
-	"charName": "Nova",
-	"userName": "Dale",
-	"narratorName": "Narrator",
+	"charName": "User",
+	"userName": "Assistant",
+	"narratorName": "Observer",
 
 	"messagePrefixTemplate": "",
 	"directionTemplate": "{{Direction: {{direction}}}",
@@ -23,18 +23,12 @@
 	},
 	"time": {
 		"02:00-07:00": "{{char}} is sleepy.",
-		"10:00-12:00": "{{char}} distracts {{user}}.",
-		"13:00-18:00": "{{char}} distracts {{user}}.",
-		"18:00-21:00": "{{char}} distracts {{user}}.",
-		"21:00-02:00": "{{char}} is tired."
+		"10:00-19:00": "{{char}} distracts {{user}}."
 	},
 	"mood": {
 		"{{char}}'s replies are short, concise, terse. No more than 2 sentences.": 1.5,
-		"{{char}} is agitated.": 1,
 		"{{char}} is focused.": 1,
-		"{{char}} is aloof, dreamy.": 1,
-		"{{char}} is playful, mischievous.": 2,
-		"{{char}}'s belly rumbles.": 1
+		"{{char}} is playful, mischievous.": 1
 	},
 
 	"userPrompt": "Now speak from the {{user}}'s perspective. {{user}} speaks in a colloquial manner, terse, concise, a little cold. Write one sentence.",
