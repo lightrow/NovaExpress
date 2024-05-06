@@ -79,28 +79,33 @@ function App() {
 		<main className={styles.main}>
 			<RCTExposer />
 			<Nav />
-			<AnimatePresence initial={false} mode='wait'>
-				<motion.div
-					key={chatsList.length ? 'hmm' : 'yeah'}
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					exit={{ opacity: 0, transition: { delay: 0.5 } }}
-					className={styles.inner}
-				>
-					{chatsList.length ? (
-						<>
-							{route === Route.CHAT && <Chat />}
-							{route === Route.CHATS && <Chats />}
-							{route === Route.PINS && <Pins />}
-							{route === Route.SETTINGS && <Settings />}
-						</>
-					) : (
-						<>
-							<Spinner />
-						</>
-					)}
-				</motion.div>
-			</AnimatePresence>
+
+			{route === Route.SETTINGS ? (
+				<Settings />
+			) : (
+				<AnimatePresence initial={false} mode='wait'>
+					<motion.div
+						key={chatsList.length ? 'hmm' : 'yeah'}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0, transition: { delay: 0.5 } }}
+						className={styles.inner}
+					>
+						{chatsList.length ? (
+							<>
+								{route === Route.CHAT && <Chat />}
+								{route === Route.CHATS && <Chats />}
+								{route === Route.PINS && <Pins />}
+							</>
+						) : (
+							<>
+								<Spinner />
+							</>
+						)}
+					</motion.div>
+				</AnimatePresence>
+			)}
+
 			<Dialogs />
 		</main>
 	);
