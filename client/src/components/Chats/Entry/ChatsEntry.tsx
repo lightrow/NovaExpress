@@ -4,7 +4,7 @@ import {
 	ChatMessage,
 	SocketEventEnum,
 } from '../../../../../types';
-import { FaTrash } from 'react-icons/fa';
+import { FaCalendar, FaTrash } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { TextRenderer } from '../../TextRenderer/TextRenderer';
 import styles from './ChatsEntry.module.css';
@@ -46,16 +46,17 @@ export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 		<div className={styles.container}>
 			<button onClick={handleLoad} className={styles.left}>
 				<div className={styles.top}>
-					<Avatar
-						persona={entry.lastMessage.persona}
-						affinity={entry.lastMessage.affinity}
-						className={styles.avatar}
-					/>
-					<span className={styles.date}>
-						Started/Branched on:{'\n'}
-						{format(entry.id, 'do MMM, hh:mma')}
-					</span>
+					{entry.personas.map((p) => (
+						<Avatar
+							persona={p.role}
+							className={styles.avatar}
+							chatId={entry.id}
+						/>
+					))}
 				</div>
+				<span className={styles.date}>
+					<FaCalendar /> {format(entry.lastMessage.date, 'do MMM, hh:mma')}
+				</span>
 				<TextRenderer className={styles.typer} message={entry.lastMessage} />
 			</button>
 			<button onClick={handleDelete} className={styles.trash}>

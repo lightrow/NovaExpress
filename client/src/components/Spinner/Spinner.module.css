@@ -1,0 +1,48 @@
+.spinner {
+	position: relative;
+	width: 84px;
+	height: 84px;
+	margin: auto;
+}
+.spinner:before,
+.spinner:after {
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 64px;
+	height: 64px;
+	transform: translate(-50%, -100%) scale(0);
+	border-radius: 50%;
+	background: var(--color-emph);
+	content: '';
+	animation: push 2s infinite linear;
+}
+.spinner:after {
+	animation-delay: -1s;
+}
+@keyframes push {
+	0% {
+		transform: translate(-50%, 0%) scale(1);
+	}
+	13% {
+		transform: translate(-48%, 2.5%) scale(1);
+	}
+	25% {
+		transform: translate(-50%, 5%) scale(1);
+	}
+	37% {
+		transform: translate(-52%, 2.5%) scale(1);
+	}
+	50% {
+		transform: translate(-50%, 0%) scale(1);
+	}
+	67% {
+		transform: translate(-52%, -50%) scale(0.66);
+	}
+	82% {
+		transform: translate(-48%, -100%) scale(0.33);
+	}
+	100% {
+		transform: translate(-50%, -150%) scale(0);
+	}
+}

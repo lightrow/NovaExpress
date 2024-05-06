@@ -1,4 +1,5 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useLayoutEffect } from 'react';
 import { SocketEventEnum, SocketServerEventEnum } from '../../types';
 import styles from './App.module.css';
 import { Chat } from './components/Chat/Chat';
@@ -8,6 +9,7 @@ import { Nav } from './components/Nav/Nav';
 import { Pins } from './components/Pins/Pins';
 import { RCTExposer } from './components/RCTExposer/RCTExposer';
 import { Settings } from './components/Settings/Settings';
+import { Spinner } from './components/Spinner/Spinner';
 import { useServerSocket } from './components/socket';
 import { Route, useGlobalStore } from './components/store';
 import { BusEventEnum, EventBus } from './utils/eventBus';
@@ -21,6 +23,7 @@ function App() {
 	const updateChatsList = useGlobalStore((s) => s.updateChatsList);
 	const toggleSpecial = useGlobalStore((s) => s.toggleSpecialMode);
 	const toggleIsSending = useGlobalStore((s) => s.toggleIsSending);
+	const chatsList = useGlobalStore((s) => s.chatsList);
 	const route = useGlobalStore((s) => s.route);
 	const socket = useServerSocket();
 	const socketUrl = useGlobalStore((s) => s.wsUrl);
@@ -76,10 +79,28 @@ function App() {
 		<main className={styles.main}>
 			<RCTExposer />
 			<Nav />
-			{route === Route.CHAT && <Chat />}
-			{route === Route.CHATS && <Chats />}
-			{route === Route.PINS && <Pins />}
-			{route === Route.SETTINGS && <Settings />}
+			<AnimatePresence initial={false} mode='wait'>
+				<motion.div
+					key={chatsList.length ? 'hmm' : 'yeah'}
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0, transition: { delay: 0.5 } }}
+					className={styles.inner}
+				>
+					{chatsList.length ? (
+						<>
+							{route === Route.CHAT && <Chat />}
+							{route === Route.CHATS && <Chats />}
+							{route === Route.PINS && <Pins />}
+							{route === Route.SETTINGS && <Settings />}
+						</>
+					) : (
+						<>
+							<Spinner />
+						</>
+					)}
+				</motion.div>
+			</AnimatePresence>
 			<Dialogs />
 		</main>
 	);

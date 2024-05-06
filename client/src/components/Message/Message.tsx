@@ -15,10 +15,12 @@ import {
 } from 'react-icons/fa';
 import { FaVolumeHigh } from 'react-icons/fa6';
 import { ChatMessage, SocketEventEnum } from '../../../../types';
+import { usePersonaName } from '../../hooks/usePersonaName';
 import { useUpdateEffect } from '../../hooks/useUpdateEffect';
 import { queueTTSText } from '../../lib/generateTts';
 import { checkIsMobile } from '../../utils/checkIsMobile';
-import { getPersonaName } from '../../utils/getPersonaName';
+import { BusEventEnum, EventBus } from '../../utils/eventBus';
+import { getScrollBottom } from '../../utils/getScrollBottom';
 import { Avatar } from '../Avatar/Avatar';
 import { TextInput } from '../TextInput/TextInput';
 import { TextRenderer } from '../TextRenderer/TextRenderer';
@@ -27,8 +29,6 @@ import { useGlobalStore } from '../store';
 import { DotsAnimation } from './DotsAnimation/DotsAnimation';
 import styles from './Message.module.css';
 import { useTts } from './useTts';
-import { BusEventEnum, EventBus } from '../../utils/eventBus';
-import { getScrollBottom } from '../../utils/getScrollBottom';
 
 export const Message: FC<{
 	index: number;
@@ -45,6 +45,7 @@ export const Message: FC<{
 	const isSending = useGlobalStore((s) => s.isSending);
 	const editInput = useRef<HTMLTextAreaElement>(null);
 	const cutoffPosition = useGlobalStore((s) => s.cutoffPosition);
+	const name = usePersonaName(message.persona);
 
 	const isNewMessage = isInferring && isLast && !isEdited && !isSending;
 
@@ -242,7 +243,7 @@ export const Message: FC<{
 					<>
 						<div className={styles.message__top}>
 							<div className={styles.message__author}>
-								<span>{getPersonaName(message.persona)}</span>
+								<span>{name}</span>
 							</div>
 							{index !== 0 && (
 								<span className={styles.message__date}>

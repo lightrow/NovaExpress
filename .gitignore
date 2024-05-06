@@ -1,8 +1,13 @@
 dist
 server/dist
-server/data/*
+
+server/data/**/*
+!server/data/chats/
+!server/data/chats/default/
+!server/data/chats/default/**
+
 client/dist
 server/node_modules
 client/node_modules
 styletts/
-DS_Store
+.DS_Store

@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { ChatMessage, SocketEventEnum } from '../../../../types';
+import { BusEventEnum, EventBus } from '../../utils/eventBus';
 import { useServerSocket } from '../socket';
 import { Route, useGlobalStore } from '../store';
 import styles from './Chats.module.css';
 import { ChatsEntry } from './Entry/ChatsEntry';
-import { EventBus, BusEventEnum } from '../../utils/eventBus';
 
 export const Chats: FC = () => {
 	const list = useGlobalStore((s) => s.chatsList);

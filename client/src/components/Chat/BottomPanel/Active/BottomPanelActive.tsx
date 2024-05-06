@@ -2,9 +2,9 @@ import { FC, useEffect, useRef } from 'react';
 import { FaChevronRight, FaCircle } from 'react-icons/fa';
 import { FaCircleDot } from 'react-icons/fa6';
 import { ChatMessage } from '../../../../../../types';
+import { usePersonaName } from '../../../../hooks/usePersonaName';
 import { checkIsMobile } from '../../../../utils/checkIsMobile';
 import { BusEventEnum, EventBus } from '../../../../utils/eventBus';
-import { getPersonaName } from '../../../../utils/getPersonaName';
 import { getScrollBottom } from '../../../../utils/getScrollBottom';
 import { Avatar } from '../../../Avatar/Avatar';
 import { TextInput } from '../../../TextInput/TextInput';
@@ -14,6 +14,21 @@ import styles from './BottomPanelActive.module.css';
 
 export const BottomPanelActive: FC = () => {
 	const isSpecial = useGlobalStore((s) => s.isSpecialMode);
+	const timeoutRef = useRef(null);
+	const {
+		inputValue,
+		setInput,
+		persona,
+		setPersona,
+		submit,
+		textAreaRef,
+		shallContinue,
+		shallReply,
+		setShallContinue,
+		setShallReply,
+		toggleSpecial,
+	} = useActions();
+	const name = usePersonaName(persona);
 
 	const handleSubmit = () => {
 		submit();
@@ -66,22 +81,6 @@ export const BottomPanelActive: FC = () => {
 			observer.disconnect();
 		};
 	}, []);
-
-	const timeoutRef = useRef(null);
-
-	const {
-		inputValue,
-		setInput,
-		persona,
-		setPersona,
-		submit,
-		textAreaRef,
-		shallContinue,
-		shallReply,
-		setShallContinue,
-		setShallReply,
-		toggleSpecial,
-	} = useActions();
 
 	const handleChange = (e: any) => {
 		setInput(e.currentTarget.value);
@@ -145,7 +144,7 @@ export const BottomPanelActive: FC = () => {
 		<div onClick={(e) => e.stopPropagation()} ref={containerRef}>
 			<div className={styles.topPanel}>
 				<button onClick={cyclePersona} onTouchEnd={cyclePersona}>
-					{getPersonaName(persona)}
+					{name}
 				</button>
 				<button onClick={toggleReply} onTouchEnd={toggleReply}>
 					<FaCircle

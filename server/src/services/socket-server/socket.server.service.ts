@@ -7,6 +7,8 @@ import { AutoMessageService } from '../auto-message/auto-message.service';
 import { ChatService } from '../chat/chat.service';
 import { LlmService } from '../llm/llm.service';
 import { Context } from '../../context';
+import { ChatManagerService } from '../chat-manager/chat-manager.service';
+import { SocketClientService } from '../socket-client/socket.client.service';
 
 export class SocketServerService {
 	static connections: ws[] = [];
@@ -17,19 +19,18 @@ export class SocketServerService {
 			'new connection, active connections:',
 			this.connections.length
 		);
-		const chat = ChatService.currentChat;
-		const chatsList = ChatService.getListOfChats();
+		const chat = ChatService.chat;
 
 		client.send(
 			JSON.stringify({
-				type: SocketServerEventEnum.MESSAGE_CHAT_RECEIVED,
-				chat: maybeSanitizeMessages(chat),
+				type: SocketServerEventEnum.CHATS_LIST,
+				list: ChatManagerService.getChatsSummary(),
 			})
 		);
 		client.send(
 			JSON.stringify({
-				type: SocketServerEventEnum.CHATS_LIST,
-				list: chatsList,
+				type: SocketServerEventEnum.MESSAGE_CHAT_RECEIVED,
+				chat: maybeSanitizeMessages(chat),
 			})
 		);
 		client.send(
@@ -75,7 +76,7 @@ export class SocketServerService {
 				ChatService.addMessageAndContinue(payload.message);
 				break;
 			case SocketEventEnum.CONTINUE:
-				generate(ChatService.currentChat);
+				generate(ChatService.chat);
 				break;
 			case SocketEventEnum.RETRY:
 				ChatService.retry();
@@ -99,10 +100,11 @@ export class SocketServerService {
 				ChatService.branchChat(payload.message);
 				break;
 			case SocketEventEnum.DELETE_CHAT:
-				ChatService.deleteChat(payload.chatId);
+				ChatManagerService.deleteChatFiles(payload.chatId);
 				break;
 			case SocketEventEnum.LOAD_CHAT:
-				ChatService.loadChat(payload.chatId);
+				ChatManagerService.loadChat(payload.chatId);
+
 				break;
 		}
 	};

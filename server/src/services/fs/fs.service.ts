@@ -44,6 +44,10 @@ export class FileService {
 		return fs.readdirSync(path.join(this.DATA_DIR, dir));
 	};
 
+	static checkDataPathExists = (dataPath: string) => {
+		return fs.existsSync(path.join(this.DATA_DIR, dataPath));
+	};
+
 	static appendToDataFile = (filePath: string, content: string) => {
 		try {
 			fs.appendFileSync(path.join(this.DATA_DIR, filePath), content);
@@ -65,6 +69,34 @@ export class FileService {
 			fs.rmSync(path.join(this.DATA_DIR, filePath));
 		} catch (error) {
 			console.warn('Failed to delete file:', filePath, error);
+		}
+	};
+
+	static deleteDataDir = (filePath: string) => {
+		try {
+			fs.rmdirSync(path.join(this.DATA_DIR, filePath), {
+				recursive: true,
+			});
+		} catch (error) {
+			console.warn('Failed to delete file:', filePath, error);
+		}
+	};
+
+	static cpDataFiles = (src: string, dest: string) => {
+		try {
+			fs.cpSync(path.join(this.DATA_DIR, src), path.join(this.DATA_DIR, dest), {
+				recursive: true,
+			});
+		} catch (error) {
+			console.warn('Failed to copy:', error);
+		}
+	};
+
+	static mkDataDir = (name: string) => {
+		try {
+			fs.mkdirSync(path.join(this.DATA_DIR, name), { recursive: true });
+		} catch (error) {
+			console.warn('Failed to create dir:', error);
 		}
 	};
 

@@ -1,8 +1,7 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { ChatListEntry, ChatMessage } from '../../../types';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { TTSAudioElement } from '../lib/generateTts';
 
 export enum Route {
 	CHAT = 'CHAT',
@@ -44,7 +43,10 @@ export interface AppStore {
 	updateBeepVolume: (volume: number) => void;
 	beepVolume: number;
 
-	updateWSUrl: (url: string) => void;
+	updateServerUrl: (url: string) => void;
+	serverUrl: string;
+
+	updateWsUrl: (url: string) => void;
 	wsUrl: string;
 
 	isSSTEnabled: boolean;
@@ -137,11 +139,17 @@ export const useGlobalStore = create(
 					state.isSSTEnabled = !state.isSSTEnabled;
 				}),
 
-			updateWSUrl: (url) =>
+			updateWsUrl: (url) =>
 				set((state) => {
 					state.wsUrl = url;
 				}),
 			wsUrl: 'ws://localhost:3001',
+
+			updateServerUrl: (url) =>
+				set((state) => {
+					state.serverUrl = url;
+				}),
+			serverUrl: 'http://localhost:3001',
 
 			updateChatsList: (list) =>
 				set((state) => {
@@ -164,9 +172,9 @@ export const useGlobalStore = create(
 		{
 			name: 'store',
 			storage: createJSONStorage(() => localStorage),
-			merge(persistedState: AppStore, currentState) {
-				return { ...currentState, ...persistedState, isInferring: false };
-			},
+			partialize: ({ isInferring, chatsList, messages, ...state }) => ({
+				...state,
+			}),
 		}
 	)
 );

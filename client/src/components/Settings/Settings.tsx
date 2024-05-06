@@ -15,7 +15,9 @@ export const Settings: FC = () => {
 	const soundMode = useGlobalStore((s) => s.soundMode);
 	const toggleSoundMode = useGlobalStore((s) => s.toggleSoundMode);
 	const wsUrl = useGlobalStore((s) => s.wsUrl);
-	const updateWSUrl = useGlobalStore((s) => s.updateWSUrl);
+	const updateWSUrl = useGlobalStore((s) => s.updateWsUrl);
+	const serverUrl = useGlobalStore((s) => s.serverUrl);
+	const updateServerUrl = useGlobalStore((s) => s.updateServerUrl);
 	const ttsUrl = useGlobalStore((s) => s.ttsUrl);
 	const updateTTSUrl = useGlobalStore((s) => s.updateTTSUrl);
 	const ttsVolume = useGlobalStore((s) => s.ttsVolume);
@@ -31,6 +33,12 @@ export const Settings: FC = () => {
 				<SettingsOption
 					icon={<FaServer />}
 					label='Server URL'
+					onChange={updateServerUrl}
+					value={serverUrl}
+				/>
+				<SettingsOption
+					icon={<FaServer />}
+					label='Websocket Server URL'
 					onChange={updateWSUrl}
 					value={wsUrl}
 				/>

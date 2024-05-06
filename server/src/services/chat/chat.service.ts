@@ -3,21 +3,16 @@ import { ChatMessage } from '../../../../types';
 import { createNewMessage } from '../../lib/createNewMessage';
 import { BusEventEnum, EventBus } from '../../lib/eventBus';
 import { generate } from '../../lib/generate';
-import { replaceTemplates } from '../../lib/replaceTemplates';
-import { generateChatFilename } from '../../util/generateChatFilename';
 import { AffinityService } from '../affinity/affinity.service';
-import { Config } from '../config/config.service';
+import { ChatManagerService } from '../chat-manager/chat-manager.service';
 import { FileService } from '../fs/fs.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
 
 export class ChatService {
-	static LAST_CHAT_ID_PATH = 'lastActiveChat.txt';
-	static CHATS_DIR = 'chats';
-
 	static addMessageAndContinue = debounce(
 		(message: ChatMessage) => {
 			this.addMessage(message);
-			generate([...this.currentChat]);
+			generate([...this.chat]);
 		},
 		500,
 		{ leading: false, trailing: true }
@@ -29,7 +24,10 @@ export class ChatService {
 	};
 
 	static addMessage = (message: ChatMessage) => {
-		const chat = this.currentChat;
+		const chat = this.chat;
+		if (message.persona === 'char' && AffinityService.lastAffinity) {
+			message.affinity = AffinityService.lastAffinity.amount;
+		}
 		chat.push(message);
 		ChatService.saveChat(chat);
 		SocketClientService.onMessageReceived(message);
@@ -42,7 +40,7 @@ export class ChatService {
 	};
 
 	static retry = () => {
-		const chat = this.currentChat;
+		const chat = this.chat;
 		const messageToRetry = chat[chat.length - 1];
 		messageToRetry.messages = [...(messageToRetry.messages || []), ''];
 		messageToRetry.activeIdx = messageToRetry.messages.length - 1;
@@ -51,12 +49,8 @@ export class ChatService {
 	};
 
 	static updateMessageWithChunk = (messageId: number, chunk: string) => {
-		const messageToUpdate = ChatService.currentChat.find(
-			(m) => m.date === messageId
-		);
-		if (messageToUpdate.persona === 'char' && AffinityService.lastAffinity) {
-			messageToUpdate.affinity = AffinityService.lastAffinity.amount;
-		}
+		const messageToUpdate = ChatService.chat.find((m) => m.date === messageId);
+
 		const messageIdx = messageToUpdate.activeIdx;
 
 		if (
@@ -67,7 +61,7 @@ export class ChatService {
 			chunk = chunk.trimStart();
 		}
 		messageToUpdate.messages[messageIdx] += chunk;
-		const chat = this.currentChat;
+		const chat = this.chat;
 		SocketClientService.onMessageChunkReceived(messageToUpdate);
 		chat.splice(
 			chat.findIndex((m) => m.date === messageId),
@@ -78,7 +72,7 @@ export class ChatService {
 	};
 
 	static editMessage = (message: ChatMessage) => {
-		const chat = this.currentChat;
+		const chat = this.chat;
 		SocketClientService.onMessageReceived(message);
 		chat.splice(
 			chat.findIndex((m) => m.date === message.date),
@@ -93,7 +87,7 @@ export class ChatService {
 	};
 
 	static cut = ({ start, end }: { start: string; end: string }) => {
-		const chat = this.currentChat;
+		const chat = this.chat;
 		const slicedChat = chat
 			.slice(0, parseInt(start))
 			.concat(chat.slice(parseInt(end ?? start) + 1, chat.length));
@@ -102,18 +96,25 @@ export class ChatService {
 	};
 
 	static pruneUnpinned = () => {
-		const chat = this.currentChat.filter((m) => m.state === 'pinned');
+		const chat = this.chat.filter((m) => m.state === 'pinned');
 		SocketClientService.onChatUpdate(chat);
 		ChatService.saveChat(chat);
 	};
 
 	static deleteMessage = (message: ChatMessage) => {
-		const chat = this.currentChat;
+		const chat = this.chat;
+		if (this.chat.length === 1) {
+			return;
+		}
 		SocketClientService.onMessageDeleted(message);
 		chat.splice(
 			chat.findIndex((m) => m.date === message.date),
 			1
 		);
+		// somehow
+		if (!chat.length) {
+			chat.push(ChatManagerService.intro);
+		}
 		ChatService.saveChat(chat);
 	};
 
@@ -122,115 +123,25 @@ export class ChatService {
 			key: BusEventEnum.CHAT_UPDATED,
 			data: chat,
 		});
-		try {
-			if (!this.currentChatId) {
-				// it's a new chat
-				this.updateCurrentChatId(new Date().getTime());
-			}
-			FileService.writeToDataFile(
-				`${this.CHATS_DIR}/chat.${this.currentChatId}.txt`,
-				JSON.stringify(chat)
-			);
-			this.refreshChatsList();
-		} catch (error) {
-			console.warn('Save chat error:', error);
-		}
-	};
-
-	static deleteChat = (chatId: number) => {
-		FileService.deleteDataFile(
-			`${this.CHATS_DIR}/${generateChatFilename(chatId)}`
+		FileService.writeToDataFile(
+			ChatManagerService.curDir + 'chat.txt',
+			JSON.stringify(chat)
 		);
-		if (chatId === this.currentChatId) {
-			const chats = this.getListOfChats();
-			const firstChat = chats[0]?.id;
-			if (firstChat) {
-				this.loadChat(firstChat);
-			} else {
-				const newChat = this.createNewChat();
-				SocketClientService.onChatUpdate(newChat);
-			}
-		}
-		this.refreshChatsList();
 	};
 
 	static branchChat = (message: ChatMessage) => {
-		const branchedChat = this.currentChat.slice(
+		const branchedChat = this.chat.slice(
 			0,
-			this.currentChat.findIndex((m) => m.date === message.date) + 1
+			this.chat.findIndex((m) => m.date === message.date) + 1
 		);
-		this.updateCurrentChatId(new Date().getTime());
+		ChatManagerService.createNewFromAnother(ChatManagerService.curId);
 		this.saveChat(branchedChat);
-		this.refreshChatsList();
 		SocketClientService.onChatUpdate(branchedChat);
 	};
 
-	static getChatById = (chatId: number): ChatMessage[] => {
-		const content = FileService.findInDataDir(
-			this.CHATS_DIR,
-			generateChatFilename(chatId)
+	static get chat(): ChatMessage[] {
+		return JSON.parse(
+			FileService.getDataFile(ChatManagerService.curDir + 'chat.txt')
 		);
-		const chat = content && JSON.parse(content);
-		if (!chat?.length) {
-			return [this.introMessage];
-		} else {
-			return chat;
-		}
-	};
-
-	static updateCurrentChatId = (chatId: number) => {
-		FileService.writeToDataFile(this.LAST_CHAT_ID_PATH, chatId.toString());
-	};
-
-	static loadChat = (chatId: number) => {
-		const chat = this.getChatById(chatId);
-		this.updateCurrentChatId(chatId);
-		SocketClientService.onChatUpdate(chat);
-	};
-
-	static refreshChatsList = () => {
-		const chats = this.getListOfChats();
-		SocketClientService.onChatsListReceived(chats);
-	};
-
-	static getListOfChats = () => {
-		const files = FileService.getDataDirContents(this.CHATS_DIR);
-		return files
-			.map((name) => parseInt(name.split('.')[1]))
-			.filter((id) => !isNaN(id))
-			.map((id) => {
-				return {
-					lastMessage: this.getChatById(id).slice(-1)[0],
-					id,
-				};
-			});
-	};
-
-	static createNewChat = () => {
-		const newChat = [this.introMessage];
-		this.updateCurrentChatId(new Date().getTime());
-		this.refreshChatsList();
-		return newChat;
-	};
-
-	static get currentChat(): ChatMessage[] {
-		try {
-			if (this.currentChatId) {
-				return this.getChatById(this.currentChatId);
-			} else {
-				return this.createNewChat();
-			}
-		} catch (error) {
-			return this.createNewChat();
-		}
-	}
-
-	static get currentChatId() {
-		const id = FileService.getDataFile(this.LAST_CHAT_ID_PATH);
-		return id ? parseInt(id) : null;
-	}
-
-	static get introMessage() {
-		return createNewMessage('narrator', replaceTemplates(Config.Intro));
 	}
 }

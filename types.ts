@@ -49,4 +49,19 @@ export enum CommandEnum {
 export interface ChatListEntry {
 	lastMessage: ChatMessage;
 	id: number; // is also date
+	active: boolean;
+	system: string;
+	personas: {
+		role: ChatMessage['persona'];
+		name: string;
+		avatars: {
+			default: string;
+			affinity_1?: string;
+			affinity_2?: string;
+			affinity_3?: string;
+			affinity_4?: string;
+			affinity_5?: string;
+			special?: string;
+		};
+	}[];
 }

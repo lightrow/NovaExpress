@@ -4,7 +4,6 @@ import {
 	SocketServerEventEnum,
 } from '../../../../types';
 import { maybeSanitizeMessages } from '../../lib/sanitizeMessages';
-import { LlmService } from '../llm/llm.service';
 import { PromptService } from '../prompt/prompt.service';
 import { SocketServerService } from '../socket-server/socket.server.service';
 

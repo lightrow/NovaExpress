@@ -6,11 +6,16 @@
 		"sourceMap": true,
 		"outDir": "dist",
 		"allowJs": true,
-		"lib": ["dom", "es6"],
+		"lib": ["dom", "es2019"],
 		"esModuleInterop": true,
 		"resolveJsonModule": true
 	},
 	"exclude": ["node_modules", "dist"],
-	"include": ["../types.ts", "src/**/*.ts", "tests/**/*.spec.ts", "configBak/index.ts"],
+	"include": [
+		"../types.ts",
+		"src/**/*.ts",
+		"tests/**/*.spec.ts",
+		"configBak/index.ts"
+	],
 	"files": ["src/index.ts", "./src/context.ts"]
 }

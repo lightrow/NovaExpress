@@ -1,5 +1,4 @@
 import { ChatMessage } from '../../../types';
-import { AffinityService } from '../services/affinity/affinity.service';
 import { ChatService } from '../services/chat/chat.service';
 import { LlmService } from '../services/llm/llm.service';
 import { NotebookService } from '../services/notebook/notebook.service';
@@ -30,7 +29,7 @@ export const generate = async (chat: ChatMessage[]) => {
 		};
 
 		await LlmService.sendPrompt(prompt, handleChunk);
-		const promptMessage = ChatService.currentChat.find((m) => m.date === id);
+		const promptMessage = ChatService.chat.find((m) => m.date === id);
 		EventBus.send({
 			key: BusEventEnum.MESSAGE_UPDATED,
 			data: promptMessage,
@@ -44,7 +43,7 @@ export const generate = async (chat: ChatMessage[]) => {
 		processing = false;
 	} catch (error) {
 		console.error(error);
-		const promptMessage = ChatService.currentChat.find((m) => m.date === id);
+		const promptMessage = ChatService.chat.find((m) => m.date === id);
 		if (promptMessage.messages[idx] === '') {
 			promptMessage.messages.splice(idx, 1);
 			promptMessage.activeIdx = promptMessage.messages.length - 1;

@@ -4,6 +4,8 @@ import { replaceTemplates } from './replaceTemplates';
 
 export const sendPush = async (message: ChatMessage) => {
 	try {
+		// remove to enable
+		return;
 		await fetch(Config.Urls.urlPush, {
 			method: 'POST',
 			headers: {

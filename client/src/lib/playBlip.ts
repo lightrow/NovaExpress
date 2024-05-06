@@ -35,6 +35,7 @@ export const playBlip = throttle(
 	}
 );
 
+// credits to SillyTavern
 // Function to play a sound with a certain frequency
 function _playBlip(frequency, volume) {
 	// Create an oscillator node

@@ -13,6 +13,13 @@
 }
 
 .date {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-top: 0.25rem;
+	gap: 0.25rem;
+	color: var(--color-text-faint);
+	font-size: 0.9rem;
 	white-space: pre-line;
 }
 

@@ -4,6 +4,8 @@ import ws from 'ws';
 import { AutoMessageService } from './services/auto-message/auto-message.service';
 import { SocketServerService } from './services/socket-server/socket.server.service';
 import './services/command/command.service';
+import { ChatManagerService } from './services/chat-manager/chat-manager.service';
+import cors from 'cors';
 
 const app = express();
 const server = http.createServer(app);
@@ -11,9 +13,15 @@ const wss = new ws.Server({ server });
 
 AutoMessageService.setup();
 
+app.use(cors());
 app.use(express.json());
-
 app.use(express.static('../dist'));
+app.use('/data', express.static('./data'));
+
+app.get('/chats', (_, res) => {
+	const summary = ChatManagerService.getChatsSummary();
+	return res.json(summary);
+});
 
 wss.on('connection', function connection(client) {
 	SocketServerService.onClientConnect(client);

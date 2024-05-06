@@ -1,3 +1,4 @@
+import { ChatManagerService } from '../chat-manager/chat-manager.service';
 import { FileService } from '../fs/fs.service';
 
 export class Config {
@@ -7,10 +8,6 @@ export class Config {
 
 	static get TemplateFormat() {
 		return JSON.parse(FileService.getConfigFile('format.json'));
-	}
-
-	static get SystemPrompt() {
-		return FileService.getConfigFile('system.txt') || '';
 	}
 
 	static get Intro() {
@@ -26,10 +23,16 @@ export class Config {
 	}
 
 	static get Chat() {
-		return JSON.parse(FileService.getConfigFile('chatConfig.json'));
+		return JSON.parse(
+			FileService.getDataFile(ChatManagerService.curDir + 'chatConfig.json')
+		);
 	}
 
-    static get Urls() {
+	static get SystemPrompt() {
+		return FileService.getDataFile(ChatManagerService.curDir + 'system.txt');
+	}
+
+	static get Urls() {
 		return JSON.parse(FileService.getConfigFile('urls.json'));
 	}
 }
