@@ -82,7 +82,6 @@ export class PromptService {
 	};
 
 	static injectDayChangeMesssages(messages: ChatMessage[]) {
-		let result: ChatMessage[] = [];
 		for (let i = 0; i < messages.length; i++) {
 			if (
 				i === 0 ||
@@ -96,12 +95,10 @@ export class PromptService {
 					'Today is ' + format(messages[i].date, 'do MMMM') + '.',
 					startOfDay(messages[i].date).getTime() + this.DAY_START_SHIFT
 				);
-				result.push(todayMessage);
+				messages.splice(i, 0, todayMessage);
+				i++;
 			}
-			result.push(messages[i]);
 		}
-
-		messages = result;
 	}
 
 	static injectExample = (chat: ChatMessage[]) => {
