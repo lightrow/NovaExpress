@@ -22,7 +22,7 @@ export class PatienceServiceFactory {
 	SHORT_WAIT_MIN = 3 * 60 * 1000;
 	SHORT_WAIT_MAX = 9 * 60 * 1000;
 
-	MAX_SKIPS_TO_WAIT_WHEN_AWAY = 5;
+	MAX_SKIPS_TO_WAIT_WHEN_AWAY = 7;
 	MAX_TRIGGERS_MORNING = 2;
 
 	MORNING_END_TIME = '9:30';
@@ -70,8 +70,7 @@ export class PatienceServiceFactory {
 				if (message.persona === 'system') {
 					continue;
 				}
-				const shouldNarratorCount = yesOrNo();
-				if (message.persona === 'narrator' && shouldNarratorCount) {
+				if (message.persona !== 'narrator') {
 					continue;
 				}
 				break;
