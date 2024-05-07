@@ -66,13 +66,9 @@ export class PatienceServiceFactory {
 			const message = chat[index];
 			if (message.persona === 'char') {
 				ignoredMessagesCount++;
+			} else if (message.persona === 'system') {
+				continue;
 			} else {
-				if (message.persona === 'system') {
-					continue;
-				}
-				if (message.persona !== 'narrator') {
-					continue;
-				}
 				break;
 			}
 		}
