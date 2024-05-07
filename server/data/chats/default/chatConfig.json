@@ -1,18 +1,26 @@
 {
 	"maxContext": 18016,
-	"narratorPromptPosition": 2,
-	"charPromptPosition": 2,
-	"otherPromptsPosition": 2,
+	"narratorPromptPosition": 3,
+	"charPromptPosition": 3,
+	"otherPromptsPosition": 3,
+	"enablePatience": false,
 
 	"charName": "Assistant",
 	"userName": "User",
 	"narratorName": "Observer",
 
-	"messagePrefixTemplate": "",
-	"directionTemplate": "{{Direction: {{direction}}}",
+	"___expl___": "Possible roles are: system, input, output. Used by internal direction messages, mostly invisible in chat. This depends on your model, i.e. whether it supports multiple 'system' messages. Leaving as 'input' is safest bet.",
+	"systemRoleAs": "input",
+	"___expl____": "Possible name ids are: narrator, user, char.",
+	"systemNameAs": "narrator",
+
+	"directionTemplate": "(Direction: {{direction}})",
 	"eventStartTemplate": "Time is {{time}}. {{user}}'s calendar event \"{{event}}\" begins now.",
 	"eventEndTemplate": "Time is {{time}}. {{user}}'s calendar event \"{{event}}\" has ended.",
 
+	"patience": {
+		"default": "{{user}} hasn't responded to {{char}} {{count}} times."
+	},
 	"affinity": {
 		"veryhigh": "{{char}} and {{user}} get along well.",
 		"high": "{{char}} and {{user}} are friendly.",

@@ -16,7 +16,7 @@ The goal of the project is to try to make something more "lifelike" than a typic
 * Pinning and pruning messages from context, without deleting them from chat.
 * Automatic subprompt direction insertions based on time, randomness, and "affinity"
 * Command/shell script execution
-* Idle/Heartbeat prompting based on inactivity.
+* Idle/Heartbeat prompting based on inactivity. Off by default. When enabled (see chatConfig.json, enablePatience key), crescent icon button acts as a soft-DnD switch. Make sure chatConfig.json has patience.default template key, see default/chatConfig.json for example.
 * Time awareness
 * Standard features such as editing, rerolling, impersonation, continuation.
 

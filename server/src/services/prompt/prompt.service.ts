@@ -49,15 +49,14 @@ export class PromptService {
 			chatSlice = [...pinnedMessages, ...chatSlice];
 		}
 
-		this.injectSubprompts(chatSlice, chat);
-		this.injectDayChangeMesssages(chatSlice);
-		this.injectExample(chatSlice);
-		this.injectSeparators(chatSlice);
-
 		for (const injection of this.injections) {
 			// custom registerable injections
 			await injection(chatSlice, chat);
 		}
+		this.injectSubprompts(chatSlice, chat);
+		this.injectDayChangeMesssages(chatSlice);
+		this.injectExample(chatSlice);
+		this.injectSeparators(chatSlice);
 
 		const formattedMessages = chatSlice.map((message, index) => {
 			return this.promptifyMessage(message, index === chatSlice.length - 1);
@@ -85,7 +84,7 @@ export class PromptService {
 			return this.buildPrompt(chat);
 		}
 		console.log('\n\n############### PROMPT #################\n\n');
-		console.log(`PROMPT (${tokens.length}):...\n${prompt.slice()}`);
+		console.log(`PROMPT (${tokens.length}):...\n${prompt}`);
 		SocketClientService.onCutoffPositionMeasured(cutoffIndex);
 
 		return prompt;
@@ -106,7 +105,7 @@ export class PromptService {
 				)
 			) {
 				const todayMessage: ChatMessage = createNewMessage(
-					'user',
+					'narrator',
 					'Today is ' + format(messages[i].date, 'do MMMM') + '.',
 					startOfDay(messages[i].date).getTime() + this.DAY_START_SHIFT
 				);
@@ -125,11 +124,11 @@ export class PromptService {
 	static injectSeparators = (chat: ChatMessage[]) => {
 		if (Config.TemplateFormat.nonInstructTemplate) {
 			// Most models expect INPUT to be followed by OUTPUT. Because we
-			// have more than two characters (Narrator), but only two roles
-			// (assistant and user), we have to "fix" situations when narrator
-			// speaks before or after someone, resulting in two inputs or two
-			// outputs in a row, depending on whether Narrator is assigned as
-			// output or input. This may not immediately affect the model's
+			// have more than two characters (Assistant, User, Narrator and
+			// System Narrator), but only two roles (user and assistant, or
+			// input and output), and one character can send multiple messages
+			// in a row,  we have to "fix" situations with two inputs or two
+			// outputs in a row. This may not immediately affect the model's
 			// output quality, but somehow it feels wrong to leave it this way.
 
 			// If you know your model doesn't care about it, e.g. llama3 header
@@ -146,9 +145,10 @@ export class PromptService {
 			const message = chat[index];
 			const previousMessage = chat[index - 1];
 
-			const type = this.getMessageType(message, index === chat.length - 1);
-			const prevType = this.getMessageType(previousMessage);
+			const type = this.getMessageRole(message, index === chat.length - 1);
+			const prevType = this.getMessageRole(previousMessage);
 
+			// todo - concat messages if they are from the same persona instead of separating them.
 			if (type === 'output' && prevType === 'output') {
 				chat.splice(
 					index,
@@ -166,7 +166,7 @@ export class PromptService {
 		}
 	};
 
-	static getMessageType = (message: ChatMessage, isLast?: boolean) => {
+	static getMessageRole = (message: ChatMessage, isLast?: boolean) => {
 		if (isLast) {
 			return 'output';
 		}
@@ -176,34 +176,53 @@ export class PromptService {
 		if (message.persona === 'char') {
 			return 'output';
 		}
-		return 'system';
+		return Config.Chat.systemRoleAs || 'system';
 	};
 
 	static promptifyMessage = (message: ChatMessage, isLast?: boolean) => {
-		const messageType = this.getMessageType(message, isLast);
+		const role = this.getMessageRole(message, isLast);
 
-		const prefix =
-			(isLast && Config.TemplateFormat[`${messageType}LastPrefix`]) ||
-			Config.TemplateFormat[`${messageType}Prefix`];
-		const suffix = Config.TemplateFormat[`${messageType}Suffix`];
+		let prefix = {
+			system: Config.TemplateFormat.systemPrefix,
+			input: Config.TemplateFormat.inputPrefix,
+			output: Config.TemplateFormat.outputPrefix,
+		}[role];
 
-		const name = {
+		if (isLast && Config.TemplateFormat.lastOutputPrefix) {
+			prefix = Config.TemplateFormat.lastOutputPrefix;
+		}
+
+		let suffix = {
+			system: Config.TemplateFormat.systemSuffix,
+			input: Config.TemplateFormat.inputSuffix,
+			output: Config.TemplateFormat.outputSuffix,
+		}[role];
+
+		if (isLast) {
+			suffix = '';
+		}
+
+		const names = {
 			user: Config.Chat.userName,
 			char: Config.Chat.charName,
 			narrator: Config.Chat.narratorName,
-			system: Config.Chat.systemName,
-		}[message.persona];
+		};
+		let personaName: string;
+		if (message.persona === 'system') {
+			personaName = names[Config.Chat.systemNameAs || 'narrator'];
+		} else {
+			personaName = names[message.persona];
+		}
 
-		const strings = [
-			prefix,
-			message.persona !== 'system' ? Config.Chat.messagePrefixTemplate : '',
-			message.messages[message.activeIdx],
-			isLast ? '' : suffix,
-		];
+		const strings = [prefix, message.messages[message.activeIdx], suffix];
 
 		return strings
 			.join('')
-			.replace('{{persona}}', name)
+			.replace(
+				'{{messageMeta}}',
+				role === 'system' ? '' : Config.TemplateFormat.messageMeta ?? ''
+			)
+			.replace('{{persona}}', personaName)
 			.replace('{{timestamp}}', format(message.date, 'hh:mma'));
 	};
 
@@ -250,16 +269,18 @@ export class PromptService {
 			Object.entries(prompts).filter(([_, value]) => !!value.join(''))
 		) as typeof prompts;
 
-		const formatAsDirection = (prompt: string) =>
-			Config.Chat.directionTemplate.replace('{{direction}}', prompt);
+		const formatAsDirection = (prompts: string[]) =>
+			Config.Chat.directionTemplate
+				.replace('{{direction}}', prompts.filter((p) => p).join(' '))
+				.trim();
 
 		prompts.common &&
 			chatSlice.splice(
 				chatSlice.length - Config.Chat.otherPromptsPosition,
 				0,
 				createNewMessage(
-					'user',
-					formatAsDirection(prompts.common.join(' ')),
+					'system',
+					formatAsDirection(prompts.common),
 					chatSlice[chatSlice.length - Config.Chat.otherPromptsPosition - 1]
 						?.date
 				)
@@ -269,8 +290,8 @@ export class PromptService {
 				chatSlice.length - Config.Chat.charPromptPosition,
 				0,
 				createNewMessage(
-					'user',
-					formatAsDirection(prompts.char.join(' ')),
+					'system',
+					formatAsDirection(prompts.char),
 					chatSlice[chatSlice.length - Config.Chat.charPromptPosition - 1]?.date
 				)
 			);
@@ -279,8 +300,8 @@ export class PromptService {
 				chatSlice.length - Config.Chat.narratorPromptPosition,
 				0,
 				createNewMessage(
-					'user',
-					formatAsDirection(prompts.narrator.join(' ')),
+					'system',
+					formatAsDirection(prompts.narrator),
 					chatSlice[chatSlice.length - Config.Chat.narratorPromptPosition - 1]
 						?.date
 				)
@@ -290,21 +311,10 @@ export class PromptService {
 				chatSlice.length - 1,
 				0,
 				createNewMessage(
-					'user',
-					formatAsDirection(prompts.user.join(' ')),
+					'system',
+					formatAsDirection(prompts.user),
 					chatSlice[chatSlice.length - 2]?.date
 				)
 			);
-
-		// 	const notebook: ChatMessage = {
-		// 		persona: 'narrator',
-		// 		date: new Date().getTime(),
-		// 		message: `*{{user}}'s notebook lies open on his table:*
-		// Today is {{date}}, {{weekday}}.
-		// {{notebookUser}}
-		// {{notebookChar}}`,
-		// 	};
-
-		// 	c.splice(c.length - 5, 0, notebook);
 	};
 }

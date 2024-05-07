@@ -1,12 +1,13 @@
 {
 	"systemPrefix": "<|start_header_id|>system<|end_header_id|>\n\n",
-	"inputPrefix": "<|start_header_id|>{{persona}} [{{timestamp}}]<|end_header_id|>\n\n",
-	"outputPrefix": "<|start_header_id|>{{persona}} [{{timestamp}}]<|end_header_id|>\n\n",
+	"inputPrefix": "<|start_header_id|>{{persona}}{{messageMeta}}<|end_header_id|>\n\n",
+	"outputPrefix": "<|start_header_id|>{{persona}}{{messageMeta}}<|end_header_id|>\n\n",
 	"outputLastPrefix": "",
 
 	"systemSuffix": "<|eot_id|>",
 	"inputSuffix": "<|eot_id|>",
 	"outputSuffix": "<|eot_id|>",
 
-	"nonInstructTemplate": true
+	"nonInstructTemplate": true,
+	"messageMeta": " [{{timestamp}}]"
 }

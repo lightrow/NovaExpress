@@ -1,16 +1,19 @@
 import classNames from 'classnames';
 import { FC, memo, useCallback } from 'react';
-import { FaBroom, FaComment, FaMapPin } from 'react-icons/fa';
-import { FaBroomBall, FaGear, FaRegRectangleList } from 'react-icons/fa6';
-import { Route, useGlobalStore } from '../store';
-import styles from './Nav.module.css';
-import { useServerSocket } from '../socket';
+import { BsMoonStars, BsMoonStarsFill } from 'react-icons/bs';
+import { FaComment, FaMapPin } from 'react-icons/fa';
+import { FaGear, FaRegRectangleList } from 'react-icons/fa6';
 import { SocketEventEnum } from '../../../../types';
 import { BusEventEnum, EventBus } from '../../utils/eventBus';
+import { useServerSocket } from '../socket';
+import { Route, useGlobalStore } from '../store';
+import styles from './Nav.module.css';
 
 export const Nav: FC = memo(() => {
 	const currentRoute = useGlobalStore((s) => s.route);
 	const setRoute = useGlobalStore((s) => s.setRoute);
+	const isAway = useGlobalStore((s) => s.isAway);
+	const toggleIsAway = useGlobalStore((s) => s.toggleIsAway);
 	const socket = useServerSocket();
 
 	const routes = {
@@ -26,6 +29,16 @@ export const Nav: FC = memo(() => {
 		},
 		[]
 	);
+
+	const handleIsAwayClick = () => {
+		socket.send(
+			JSON.stringify({
+				type: SocketEventEnum.TOGGLE_AWAY,
+				value: !isAway,
+			})
+		);
+		toggleIsAway();
+	};
 
 	const purge = () => {
 		EventBus.send({
@@ -66,8 +79,12 @@ export const Nav: FC = memo(() => {
 					);
 				})}
 				<div className={styles.separator} />
-				<button className={styles.routeButton} onClick={purge}>
-					<FaBroomBall />
+				<button className={styles.routeButton} onClick={handleIsAwayClick}>
+					{isAway ? (
+						<BsMoonStarsFill color='var(--color-highlight)' />
+					) : (
+						<BsMoonStars color='var(--color-text-faint)' />
+					)}
 				</button>
 			</div>
 		</div>

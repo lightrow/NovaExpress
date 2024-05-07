@@ -128,12 +128,20 @@ export class ChatManagerService {
 					)
 					.map(([key, filename]) => [key, `/data/chats/${id}/${filename}`])
 			);
+
 			return {
 				id: Number(id),
 				active: Number(id) === this.curId,
 				system,
 				lastMessage,
 				personas: [
+					{
+						role: 'system',
+						name: chatConfig[`${chatConfig.systemNameAs}Name`],
+						avatars: {
+							default: `/data/chats/${id}/${chatConfig.systemNameAs}.png`,
+						},
+					},
 					{
 						role: 'char',
 						name: chatConfig.charName,

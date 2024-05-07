@@ -3,7 +3,7 @@ import { SocketEventEnum, SocketServerEventEnum } from '../../../../types';
 import { generate } from '../../lib/generate';
 import { replaceTemplates } from '../../lib/replaceTemplates';
 import { maybeSanitizeMessages } from '../../lib/sanitizeMessages';
-import { AutoMessageService } from '../auto-message/auto-message.service';
+import { PatienceService } from '../patience/patience.service';
 import { ChatService } from '../chat/chat.service';
 import { LlmService } from '../llm/llm.service';
 import { Context } from '../../context';
@@ -20,7 +20,7 @@ export class SocketServerService {
 			this.connections.length
 		);
 		const chat = ChatService.chat;
-
+		PatienceService.isAway = false;
 		client.send(
 			JSON.stringify({
 				type: SocketServerEventEnum.CHATS_LIST,
@@ -39,6 +39,10 @@ export class SocketServerService {
 				value: Context.isSpecialMode,
 			})
 		);
+		SocketClientService.sendPayloadToClients({
+			type: SocketEventEnum.TOGGLE_AWAY,
+			value: PatienceService.isAway,
+		});
 	};
 
 	static onClose = (client: ws) => {
@@ -46,6 +50,7 @@ export class SocketServerService {
 			this.connections.findIndex((w) => client === w),
 			1
 		);
+		PatienceService.isAway = !this.connections.length;
 		console.info(
 			'connection closed, remaining connections:',
 			this.connections.length
@@ -53,7 +58,7 @@ export class SocketServerService {
 	};
 
 	static onMessage = (rawPayload: ws.RawData) => {
-		AutoMessageService.beginAutoTriggerCountdown();
+		PatienceService.beginAutoTriggerCountdown();
 
 		const payload = JSON.parse(rawPayload.toString());
 
@@ -104,7 +109,9 @@ export class SocketServerService {
 				break;
 			case SocketEventEnum.LOAD_CHAT:
 				ChatManagerService.loadChat(payload.chatId);
-
+				break;
+			case SocketEventEnum.TOGGLE_AWAY:
+				PatienceService.isAway = payload.value;
 				break;
 		}
 	};

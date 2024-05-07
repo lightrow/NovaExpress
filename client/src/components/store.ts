@@ -54,6 +54,9 @@ export interface AppStore {
 
 	isSpecialMode: boolean;
 	toggleSpecialMode: (val?: boolean) => void;
+
+	isAway: boolean;
+	toggleIsAway: (val?: boolean) => void;
 }
 
 export const useGlobalStore = create(
@@ -167,6 +170,12 @@ export const useGlobalStore = create(
 			toggleIsSending: (val) =>
 				set((state) => {
 					state.isSending = val !== undefined ? val : !state.isSending;
+				}),
+
+			isAway: false,
+			toggleIsAway: (val) =>
+				set((state) => {
+					state.isAway = val !== undefined ? val : !state.isAway;
 				}),
 		})),
 		{

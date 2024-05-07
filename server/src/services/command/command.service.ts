@@ -30,19 +30,19 @@ class CommandsServiceFactory {
 			switch (type) {
 				case CommandEnum.PLAY_MUSIC:
 					exec(`osascript -e 'tell app "Swinsian" to play'`);
-					ChatActionsService.narrateAndTrigger('Music starts playing.');
+					ChatActionsService.narrateSystemAndMaybeTrigger('Music starts playing.');
 					break;
 				case CommandEnum.PAUSE_MUSIC:
 					exec(`osascript -e 'tell app "Swinsian" to pause'`);
-					ChatActionsService.narrateAndTrigger('Music stops playing.');
+					ChatActionsService.narrateSystemAndMaybeTrigger('Music stops playing.');
 					break;
 				case CommandEnum.ENABLE_RAIN:
-					ChatActionsService.narrateAndTrigger(
+					ChatActionsService.narrateSystemAndMaybeTrigger(
 						'Rain projection activates. Sound of raindrops fills the room.'
 					);
 					break;
 				case CommandEnum.DISABLE_RAIN:
-					ChatActionsService.narrateAndTrigger(
+					ChatActionsService.narrateSystemAndMaybeTrigger(
 						'Rain projection deactivates. Ambience returns back to normal.'
 					);
 					break;

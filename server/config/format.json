@@ -1,10 +1,13 @@
 {
 	"systemPrefix": "### Instruction:\n",
-	"inputPrefix": "### Input [{{persona}} {{timestamp}}]:\n",
-	"outputPrefix": "### Response [{{persona}} {{timestamp}}]:\n",
+	"inputPrefix": "### Input{{messageMeta}}:\n",
+	"outputPrefix": "### Response{{messageMeta}}:\n",
 	"outputLastPrefix": "",
 
 	"systemSuffix": "\n",
 	"inputSuffix": "\n",
-	"outputSuffix": "\n"
+	"outputSuffix": "\n",
+
+	"__expl__": "Message meta will be applied to non-system messages. It can use message-unique {{persona}} and {{timestamp}} templates.",
+	"messageMeta": " ({{persona}} {{timestamp}})"
 }

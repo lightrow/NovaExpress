@@ -15,11 +15,5 @@ export const replaceTemplates = (s: string) => {
 		.replace(/{{time}}/g, format(new Date().getTime(), 'hh:mma'))
 		.replace(/{{weekday}}/g, format(new Date().getTime(), 'eeee'))
 		.replace(/{{date}}/g, format(new Date().getTime(), 'do MMMM'))
-		.replace(/{{inputPrefix}}/g, Config.TemplateFormat.inputPrefix)
-		.replace(/{{inputSuffix}}/g, Config.TemplateFormat.inputSuffix)
-		.replace(/{{outputPrefix}}/g, Config.TemplateFormat.outputPrefix)
-		.replace(/{{outputSuffix}}/g, Config.TemplateFormat.outputSuffix)
-		.replace(/{{systemPrefix}}/g, Config.TemplateFormat.systemPrefix)
-		.replace(/{{systemSuffix}}/g, Config.TemplateFormat.systemSuffix)
 		.replace(/{{notebook}}/g, NotebookService.Notebook);
 };

@@ -1,10 +1,12 @@
 {
 	"systemPrefix": "SYSTEM: \n",
-	"inputPrefix": "USER: \n",
-	"outputPrefix": "ASSISTANT: \n",
+	"inputPrefix": "USER:{{messageMeta}} \n",
+	"outputPrefix": "ASSISTANT:{{messageMeta}} \n",
 	"outputLastPrefix": "",
 
 	"systemSuffix": "\n",
 	"inputSuffix": "\n",
-	"outputSuffix": "\n"
+	"outputSuffix": "\n",
+
+	"messageMeta": " [{{persona}} {{timestamp}}]"
 }

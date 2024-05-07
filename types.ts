@@ -25,6 +25,7 @@ export enum SocketEventEnum {
 	LOAD_CHAT = 'loadChat',
 	DELETE_CHAT = 'deleteChat',
 	TOGGLE_SPECIAL = 'toggleSpecial',
+	TOGGLE_AWAY = 'toggleAway',
 }
 
 export enum SocketServerEventEnum {

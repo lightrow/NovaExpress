@@ -1,17 +1,15 @@
 import express from 'express';
 import http from 'http';
 import ws from 'ws';
-import { AutoMessageService } from './services/auto-message/auto-message.service';
-import { SocketServerService } from './services/socket-server/socket.server.service';
+import './services/patience/patience.service';
 import './services/command/command.service';
+import { SocketServerService } from './services/socket-server/socket.server.service';
 import { ChatManagerService } from './services/chat-manager/chat-manager.service';
 import cors from 'cors';
 
 const app = express();
 const server = http.createServer(app);
 const wss = new ws.Server({ server });
-
-AutoMessageService.setup();
 
 app.use(cors());
 app.use(express.json());

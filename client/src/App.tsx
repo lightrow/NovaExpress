@@ -22,6 +22,7 @@ function App() {
 	const updateCutoffPosition = useGlobalStore((s) => s.updateCutoffPosition);
 	const updateChatsList = useGlobalStore((s) => s.updateChatsList);
 	const toggleSpecial = useGlobalStore((s) => s.toggleSpecialMode);
+	const toggleIsAway = useGlobalStore((s) => s.toggleIsAway);
 	const toggleIsSending = useGlobalStore((s) => s.toggleIsSending);
 	const chatsList = useGlobalStore((s) => s.chatsList);
 	const route = useGlobalStore((s) => s.route);
@@ -66,6 +67,9 @@ function App() {
 			}
 			if (obj.type === SocketEventEnum.TOGGLE_SPECIAL) {
 				toggleSpecial(obj.value);
+			}
+			if (obj.type === SocketEventEnum.TOGGLE_AWAY) {
+				toggleIsAway(obj.value);
 			}
 		});
 		socket.connect(socketUrl);

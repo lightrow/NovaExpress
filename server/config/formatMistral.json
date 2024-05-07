@@ -1,10 +1,12 @@
 {
 	"systemPrefix": "[INST]",
-	"inputPrefix": "[INST]{{persona}} said on {{timestamp}}:",
-	"outputPrefix": "{{persona}} said on {{timestamp}}:",
+	"inputPrefix": "[INST]{{messageMeta}}",
+	"outputPrefix": "{{messageMeta}}",
 	"outputLastPrefix": "",
 
 	"systemSuffix": "[/INST] ",
 	"inputSuffix": "[/INST] ",
-	"outputSuffix": "</s> "
+	"outputSuffix": "</s> ",
+
+	"messageMeta": " {{persona}} said on {{timestamp}}: "
 }
