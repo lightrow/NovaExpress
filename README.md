@@ -56,11 +56,11 @@ Available templates in messages:
 {{systemPrefix}}
 {{systemSuffix}}
 {{notebook}}
-{{persona}} - author of message
-{{timestamp}} - time of message
 ```
 Additional templates:
 
+* `{{persona}}` - author of message, not rendered in UI but is passed to LLM during prompt gen, meant for hidden use, e.g. inside of message prefix.
+* `{{timestamp}}` - time of message, same as above
 * `directionTemplate: {{direction}}` - direction's content. Directions are dynamic prompts.
 * `event(Start/End)Template: {{event}}` - content of the event.txt file
 
