@@ -48,7 +48,9 @@ const useCreateActions = () => {
 	// 5. reroll
 
 	const _submit = useCallback(() => {
-		if (shallReply) {
+		if (inputValueRef.current.startsWith('/')) {
+			handleSlashCommand(inputValueRef.current);
+		} else if (shallReply) {
 			submitAndReply(persona);
 		} else if (shallContinue) {
 			submitAndContinue(persona);
@@ -114,6 +116,28 @@ const useCreateActions = () => {
 			})
 		);
 		setSpecial(!isSpecial);
+	};
+
+	const handleSlashCommand = (val: string) => {
+		if (val.startsWith('/cut ')) {
+			const [_, start, end] = val.split(' ');
+			if (!start) {
+				return;
+			}
+			socket.send(
+				JSON.stringify({
+					type: SocketEventEnum.CUT,
+					start,
+					end,
+				})
+			);
+		} else if (val === '/prune') {
+			socket.send(
+				JSON.stringify({
+					type: SocketEventEnum.PRUNE,
+				})
+			);
+		}
 	};
 
 	return {

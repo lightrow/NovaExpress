@@ -11,6 +11,16 @@ import { MoodService } from '../mood/mood.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
 
 export class PromptService {
+	static injections: ((
+		chatSlice: ChatMessage[],
+		fullChat: ChatMessage[]
+	) => Promise<void> | void)[] = [];
+
+	static addPromptInjection = (fn: (typeof this.injections)[number]) => {
+		this.injections.push(fn);
+		return () => this.injections.splice(this.injections.indexOf(fn), 1);
+	};
+
 	static DAY_START_SHIFT = 6 * 60 * 60 * 1000; // assume day starts at 06:00AM, otherwise AI gets confused
 
 	static buildPrompt = async (chat: ChatMessage[]) => {
@@ -43,6 +53,11 @@ export class PromptService {
 		this.injectDayChangeMesssages(chatSlice);
 		this.injectExample(chatSlice);
 		this.injectSeparators(chatSlice);
+
+		for (const injection of this.injections) {
+			// custom registerable injections
+			await injection(chatSlice, chat);
+		}
 
 		const formattedMessages = chatSlice.map((message, index) => {
 			return this.promptifyMessage(message, index === chatSlice.length - 1);

@@ -102,9 +102,11 @@ export class ChatManagerService {
 	static getChatsSummary = () => {
 		const chatIds = ChatManagerService.getListOfChats();
 		const chatsData = chatIds.map((id) => {
-			const lastMessage = JSON.parse(
-				FileService.getDataFile(`/chats/${id}/chat.txt`)
-			).slice(-1)[0];
+			const lastMessage =
+				JSON.parse(
+					FileService.getDataFile(`/chats/${id}/chat.txt`) || '[]'
+				).slice(-1)[0] ||
+				createNewMessage('system', '`...this chat is empty`', 0);
 			const chatConfig = JSON.parse(
 				FileService.getDataFile(`/chats/${id}/chatConfig.json`)
 			);

@@ -97,6 +97,9 @@ export class ChatService {
 
 	static pruneUnpinned = () => {
 		const chat = this.chat.filter((m) => m.state === 'pinned');
+		if (!chat.length) {
+			chat.push(ChatManagerService.intro);
+		}
 		SocketClientService.onChatUpdate(chat);
 		ChatService.saveChat(chat);
 	};
@@ -140,8 +143,13 @@ export class ChatService {
 	};
 
 	static get chat(): ChatMessage[] {
-		return JSON.parse(
-			FileService.getDataFile(ChatManagerService.curDir + 'chat.txt')
+		let chat = JSON.parse(
+			FileService.getDataFile(ChatManagerService.curDir + 'chat.txt') || '[]'
 		);
+		if (!chat?.length) {
+			// just in case
+			chat = [ChatManagerService.intro];
+		}
+		return chat;
 	}
 }
