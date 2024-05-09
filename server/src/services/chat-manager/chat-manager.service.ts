@@ -17,7 +17,7 @@ export class ChatManagerService {
 	}
 
 	static get intro() {
-		return createNewMessage('narrator', replaceTemplates(Config.Intro));
+		return createNewMessage('char', replaceTemplates(Config.Intro));
 	}
 
 	static loadInitialChat = () => {

@@ -1,6 +1,7 @@
 import { Agent, fetch, RequestInit, setGlobalDispatcher } from 'undici';
 import wait from '../../util/wait';
 import { Config } from '../config/config.service';
+import { replaceTemplates } from '../../lib/replaceTemplates';
 
 setGlobalDispatcher(new Agent({ bodyTimeout: 1_200_000 }));
 
@@ -28,6 +29,7 @@ export class LlmService {
 
 		const payload = { ...Config.Llm };
 		payload.prompt = prompt;
+		payload.stop = payload.stop.map((s) => replaceTemplates(s));
 		options.body = JSON.stringify(payload);
 
 		try {

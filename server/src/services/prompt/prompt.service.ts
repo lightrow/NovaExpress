@@ -1,7 +1,10 @@
 import { format, isSameDay, startOfDay } from 'date-fns';
 import { ChatMessage } from '../../../../types';
 import { Context } from '../../context';
-import { createNewMessage } from '../../lib/createNewMessage';
+import {
+	createDirectionMessage,
+	createNewMessage,
+} from '../../lib/createNewMessage';
 import { replaceTemplates } from '../../lib/replaceTemplates';
 import { isDateBetweenTimes } from '../../util/isDateBetweenTimes';
 import { AffinityService } from '../affinity/affinity.service';
@@ -23,8 +26,8 @@ export class PromptService {
 
 	static DAY_START_SHIFT = 6 * 60 * 60 * 1000; // assume day starts at 06:00AM, otherwise AI gets confused
 
-	static buildPrompt = async (chat: ChatMessage[]) => {
-		if (chat.length % Context.cutoffInterval === 0) {
+	static buildPrompt = async (chat: ChatMessage[], recursive?: boolean) => {
+		if (chat.length % Context.cutoffInterval === 0 && !recursive) {
 			// Reset the cutoff params to let them be reevaluated anew.
 			// Can only be done at time of context shift.
 			this.setCutoffInterval(1000);
@@ -59,7 +62,11 @@ export class PromptService {
 		this.injectSeparators(chatSlice);
 
 		const formattedMessages = chatSlice.map((message, index) => {
-			return this.promptifyMessage(message, index === chatSlice.length - 1);
+			return this.promptifyMessage(
+				message,
+				index === chatSlice.length - 1,
+				index === 0
+			);
 		});
 
 		const prompt = replaceTemplates(
@@ -81,7 +88,7 @@ export class PromptService {
 			console.info(
 				`Hit context limit, adjusting cutoff to: ${Context.cutoffInterval}/${Context.cutoffKeep} and retrying`
 			);
-			return this.buildPrompt(chat);
+			return this.buildPrompt(chat, true);
 		}
 		console.log('\n\n############### PROMPT #################\n\n');
 		console.log(`PROMPT (${tokens.length}):...\n${prompt}`);
@@ -104,8 +111,7 @@ export class PromptService {
 					new Date(messages[i].date - this.DAY_START_SHIFT)
 				)
 			) {
-				const todayMessage: ChatMessage = createNewMessage(
-					'narrator',
+				const todayMessage: ChatMessage = createDirectionMessage(
 					'Today is ' + format(messages[i].date, 'do MMMM') + '.',
 					startOfDay(messages[i].date).getTime() + this.DAY_START_SHIFT
 				);
@@ -156,7 +162,10 @@ export class PromptService {
 					createNewMessage('user', '...', previousMessage.date + 1)
 				);
 			}
-			if (type === 'input' && prevType === 'input') {
+			if (
+				(type === 'input' || type === 'system') &&
+				(prevType === 'input' || prevType === 'system')
+			) {
 				chat.splice(
 					index,
 					0,
@@ -176,52 +185,47 @@ export class PromptService {
 		if (message.persona === 'char') {
 			return 'output';
 		}
-		return Config.Chat.systemRoleAs || 'system';
+		return 'system';
 	};
 
-	static promptifyMessage = (message: ChatMessage, isLast?: boolean) => {
+	static promptifyMessage = (
+		message: ChatMessage,
+		isLast?: boolean,
+		isFirst?: boolean
+	) => {
 		const role = this.getMessageRole(message, isLast);
+		const tFormat = Config.TemplateFormat;
 
-		let prefix = {
-			system: Config.TemplateFormat.systemPrefix,
-			input: Config.TemplateFormat.inputPrefix,
-			output: Config.TemplateFormat.outputPrefix,
-		}[role];
-
-		if (isLast && Config.TemplateFormat.lastOutputPrefix) {
-			prefix = Config.TemplateFormat.lastOutputPrefix;
-		}
-
-		let suffix = {
-			system: Config.TemplateFormat.systemSuffix,
-			input: Config.TemplateFormat.inputSuffix,
-			output: Config.TemplateFormat.outputSuffix,
-		}[role];
-
-		if (isLast) {
-			suffix = '';
-		}
+		const getXFix = (role: string, xfix: 'Suffix' | 'Prefix') => {
+			let result = '';
+			if (isFirst && role !== 'system') {
+				// first system prompt is not a "message" and is handled elsewhere
+				result = tFormat[`${role}First${xfix}`];
+			} else if (isLast) {
+				result = tFormat[`${role}Last${xfix}`] || '';
+			}
+			if (isLast && xfix === 'Suffix') {
+				return result;
+			}
+			return result || tFormat[`${role}${xfix}`] || '';
+		};
 
 		const names = {
 			user: Config.Chat.userName,
 			char: Config.Chat.charName,
 			narrator: Config.Chat.narratorName,
+			system: Config.Chat.systemName,
 		};
-		let personaName: string;
-		if (message.persona === 'system') {
-			personaName = names[Config.Chat.systemNameAs || 'narrator'];
-		} else {
-			personaName = names[message.persona];
-		}
+		const personaName = names[message.persona];
 
-		const strings = [prefix, message.messages[message.activeIdx], suffix];
+		const strings = [
+			getXFix(role, 'Prefix'),
+			message.messages[message.activeIdx],
+			getXFix(role, 'Suffix'),
+		];
 
 		return strings
 			.join('')
-			.replace(
-				'{{messageMeta}}',
-				role === 'system' ? '' : Config.TemplateFormat.messageMeta ?? ''
-			)
 			.replace('{{persona}}', personaName)
 			.replace('{{timestamp}}', format(message.date, 'hh:mma'));
 	};
@@ -255,7 +259,7 @@ export class PromptService {
 				Config.Chat.narratorSpecialMode) ||
 			'';
 
-		let prompts = {
+		const prompts = {
 			common: Context.isSpecialMode ? [Config.Chat.specialModePromp] : [],
 			narrator: Context.isSpecialMode
 				? [narratorSpecialPrompt]
@@ -265,56 +269,46 @@ export class PromptService {
 				: [Config.Chat.charPrompt, timeBasedPrompt, moodPrompt, affinityPrompt],
 			user: [userPrompt],
 		};
-		prompts = Object.fromEntries(
-			Object.entries(prompts).filter(([_, value]) => !!value.join(''))
-		) as typeof prompts;
+		const promptStrings = Object.fromEntries(
+			Object.entries(prompts)
+				.map(([key, value]) => {
+					return [
+						key,
+						value
+							.filter((v) => v)
+							.join(' ')
+							.trim(),
+					] as [string, string];
+				})
+				.filter(([_, value]) => value)
+		);
 
-		const formatAsDirection = (prompts: string[]) =>
-			Config.Chat.directionTemplate
-				.replace('{{direction}}', prompts.filter((p) => p).join(' '))
-				.trim();
+		const insertPromptIntoChat = (promptString: string, position: number) => {
+			if (!promptString) {
+				return;
+			}
+			chatSlice.splice(
+				chatSlice.length - position,
+				0,
+				createDirectionMessage(
+					promptString,
+					chatSlice[chatSlice.length - position - 1]?.date
+				)
+			);
+		};
 
-		prompts.common &&
-			chatSlice.splice(
-				chatSlice.length - Config.Chat.otherPromptsPosition,
-				0,
-				createNewMessage(
-					'system',
-					formatAsDirection(prompts.common),
-					chatSlice[chatSlice.length - Config.Chat.otherPromptsPosition - 1]
-						?.date
-				)
-			);
-		prompts.char &&
-			chatSlice.splice(
-				chatSlice.length - Config.Chat.charPromptPosition,
-				0,
-				createNewMessage(
-					'system',
-					formatAsDirection(prompts.char),
-					chatSlice[chatSlice.length - Config.Chat.charPromptPosition - 1]?.date
-				)
-			);
-		prompts.narrator &&
-			chatSlice.splice(
-				chatSlice.length - Config.Chat.narratorPromptPosition,
-				0,
-				createNewMessage(
-					'system',
-					formatAsDirection(prompts.narrator),
-					chatSlice[chatSlice.length - Config.Chat.narratorPromptPosition - 1]
-						?.date
-				)
-			);
-		prompts.user &&
-			chatSlice.splice(
-				chatSlice.length - 1,
-				0,
-				createNewMessage(
-					'system',
-					formatAsDirection(prompts.user),
-					chatSlice[chatSlice.length - 2]?.date
-				)
-			);
+		insertPromptIntoChat(
+			promptStrings.common,
+			Config.Chat.otherPromptsPosition
+		);
+
+		insertPromptIntoChat(promptStrings.char, Config.Chat.charPromptPosition);
+
+		insertPromptIntoChat(
+			promptStrings.narrator,
+			Config.Chat.narratorPromptPosition
+		);
+
+		insertPromptIntoChat(promptStrings.user, 1);
 	};
 }

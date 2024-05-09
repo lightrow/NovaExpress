@@ -1,12 +1,17 @@
 {
-	"systemPrefix": "[INST]",
-	"inputPrefix": "[INST]{{messageMeta}}",
-	"outputPrefix": "{{messageMeta}}",
-	"outputLastPrefix": "",
+	"systemFirstPrefix": "[INST] ",
+	"systemFirstSuffix": " [/INST] Understood </s> ",
 
-	"systemSuffix": "[/INST] ",
-	"inputSuffix": "[/INST] ",
-	"outputSuffix": "</s> ",
+	"systemPrefix": "[INST] ",
+	"inputPrefix": "[INST] {{persona}} ({{timestamp}}): ",
+	"outputPrefix": "{{persona}} ({{timestamp}}): ",
 
-	"messageMeta": " {{persona}} said on {{timestamp}}: "
+	"systemSuffix": " [/INST] ",
+	"inputSuffix": " [/INST] ",
+	"inputFirstSuffix": "",
+	"outputSuffix": " </s> ",
+
+	"outputLastPrefix": "{{persona}} ({{timestamp}}): ",
+
+	"nonInstructTemplate": false
 }

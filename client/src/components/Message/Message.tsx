@@ -189,7 +189,9 @@ export const Message: FC<{
 			className={classNames(styles.message, styles[message.persona], {
 				[styles.cutoffBorder]: cutoffPosition === index && index > 0,
 				[styles.isLast]: isLast,
-				[styles.pruned]: cutoffPosition > index || message.state === 'pruned',
+				[styles.pruned]:
+					(cutoffPosition > index && message.state !== 'pinned') ||
+					message.state === 'pruned',
 			})}
 			style={{
 				paddingBottom: isLast ? (checkIsMobile() ? 96 : lastMessagePadding) : 0,

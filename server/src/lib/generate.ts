@@ -44,13 +44,15 @@ export const generate = async (chat: ChatMessage[]) => {
 	} catch (error) {
 		console.error(error);
 		const promptMessage = ChatService.chat.find((m) => m.date === id);
-		if (promptMessage.messages[idx] === '') {
-			promptMessage.messages.splice(idx, 1);
-			promptMessage.activeIdx = promptMessage.messages.length - 1;
-			if (!promptMessage.messages.length) {
-				ChatService.deleteMessage(promptMessage);
-			} else {
-				ChatService.editMessage(promptMessage);
+		if (promptMessage) {
+			if (promptMessage.messages[idx] === '') {
+				promptMessage.messages.splice(idx, 1);
+				promptMessage.activeIdx = promptMessage.messages.length - 1;
+				if (!promptMessage.messages.length) {
+					ChatService.deleteMessage(promptMessage);
+				} else {
+					ChatService.editMessage(promptMessage);
+				}
 			}
 		}
 		SocketClientService.onStreamEnded();

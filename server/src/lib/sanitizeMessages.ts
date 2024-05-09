@@ -31,7 +31,7 @@ const emojis = [
 // cause output degradation cascade, with model returning nothing but
 // combination of emojis and punctuation gibberish.
 export const maybeSanitizeMessages = (chat: ChatMessage[]) => {
-	return !Config.Chat.useSanitize
+	return !Config.Chat.enableSanitize
 		? chat
 		: chat.map((message) => {
 				return {

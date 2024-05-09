@@ -1,0 +1,16 @@
+{
+	"systemFirstPrefix": "<|start_header_id|>system<|end_header_id|>\n\n",
+	"systemFirstSuffix": "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n",
+
+	"systemPrefix": "{{persona}}: ",
+	"inputPrefix": "{{persona}} ({{timestamp}}): ",
+	"outputPrefix": "{{persona}} ({{timestamp}}): ",
+
+	"systemSuffix": "\n",
+	"inputSuffix": "\n",
+	"outputSuffix": "\n",
+	
+	"outputLastPrefix": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n{{persona}} ({{timestamp}}): ",
+
+	"nonInstructTemplate": true
+}

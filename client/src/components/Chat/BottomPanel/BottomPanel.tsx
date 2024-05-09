@@ -10,7 +10,8 @@ import { checkIsMobile } from '../../../utils/checkIsMobile';
 
 export const BottomPanel: FC = () => {
 	const isInferring = useGlobalStore((s) => s.isInferring);
-	const { isActive, setIsActive, stop, retry, continueFromLast } = useActions();
+	const { isActive, setIsActive, stop, retry, continueFromLast, cyclePersona } =
+		useActions();
 
 	useSpeech();
 
@@ -34,7 +35,12 @@ export const BottomPanel: FC = () => {
 			}
 			if (event.key === ' ') {
 				event.preventDefault();
-				activate();
+				if (!isActive) {
+					activate();
+				}
+				if (event.ctrlKey) {
+					cyclePersona();
+				}
 			}
 			if (event.key === 'Escape') {
 				if (isActive) {

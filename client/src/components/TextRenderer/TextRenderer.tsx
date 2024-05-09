@@ -124,9 +124,16 @@ export const TextRenderer: FC<{
 	};
 
 	const prettifyMessage = (message: string) => {
+		let isCode = false;
 		return message
 			.split('\n')
 			.map((line) => {
+				if (line.startsWith('```')) {
+					isCode = !isCode;
+				}
+				if (isCode) {
+					return line;
+				}
 				if (line === '*') {
 					line = '';
 				}

@@ -1,5 +1,8 @@
 import { ChatMessage } from '../../../../types';
-import { createNewMessage } from '../../lib/createNewMessage';
+import {
+	createDirectionMessage,
+	createNewMessage,
+} from '../../lib/createNewMessage';
 import { replaceTemplates } from '../../lib/replaceTemplates';
 import { getRandomBetween } from '../../util/getRandomBetween';
 import { isDateBetweenTimes } from '../../util/isDateBetweenTimes';
@@ -47,15 +50,11 @@ export class PatienceServiceFactory {
 		chatSlice.splice(
 			chatSlice.length - 1,
 			0,
-			createNewMessage(
-				'system',
-				Config.Chat.directionTemplate.replace(
-					'{{direction}}',
-					(
-						Config.Chat.patience?.default ||
-						"{{user}} hasn't responded to {{char}} {{count}} times."
-					).replace('{{count}}', count)
-				)
+			createDirectionMessage(
+				(
+					Config.Chat.patience?.default ||
+					"{{user}} hasn't responded to {{char}} {{count}} times."
+				).replace('{{count}}', count)
 			)
 		);
 	};

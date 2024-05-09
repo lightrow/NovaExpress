@@ -1,0 +1,16 @@
+{
+	"systemFirstPrefix": "### Instruction:\n",
+	"systemFirstSuffix": "\n### Input:\n",
+
+	"systemPrefix": "{{persona}}: ",
+	"inputPrefix": "{{persona}} ({{timestamp}}): ",
+	"outputPrefix": "{{persona}} ({{timestamp}}): ",
+
+	"systemSuffix": "\n",
+	"inputSuffix": "\n",
+	"outputSuffix": "\n",
+
+	"outputLastPrefix": "### Response:\n{{persona}} ({{timestamp}}): ",
+
+	"nonInstructTemplate": true
+}

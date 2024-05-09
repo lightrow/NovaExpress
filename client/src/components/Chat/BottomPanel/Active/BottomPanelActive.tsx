@@ -19,7 +19,7 @@ export const BottomPanelActive: FC = () => {
 		inputValue,
 		setInput,
 		persona,
-		setPersona,
+		cyclePersona,
 		submit,
 		textAreaRef,
 		shallContinue,
@@ -90,6 +90,9 @@ export const BottomPanelActive: FC = () => {
 		if (e.key === 'Escape') {
 			return;
 		}
+		if (e.key === ' ' && e.ctrlKey) {
+			return;
+		}
 		e.stopPropagation();
 		if (!checkIsMobile() && e.key === 'Enter' && !e.shiftKey && !e.ctrlKey) {
 			e.preventDefault();
@@ -97,27 +100,9 @@ export const BottomPanelActive: FC = () => {
 		}
 	};
 
-	const cyclePersona = (e) => {
+	const handlePersonaClick = (e) => {
 		e.preventDefault();
-		setPersona((persona) => {
-			const personas = ['user', 'char', 'narrator']; // no system allowed
-			const nextPersona =
-				personas[(personas.indexOf(persona) + 1) % personas.length];
-			switch (nextPersona) {
-				case 'user':
-					setShallReply(true);
-					setShallContinue(false);
-					break;
-				case 'char':
-					setShallReply(false);
-					setShallContinue(true);
-				case 'narrator':
-					setShallReply(false);
-					setShallContinue(true);
-			}
-
-			if (nextPersona) return nextPersona as ChatMessage['persona'];
-		});
+		cyclePersona();
 	};
 
 	const toggleContinue = (e) => {
@@ -143,7 +128,10 @@ export const BottomPanelActive: FC = () => {
 	return (
 		<div onClick={(e) => e.stopPropagation()} ref={containerRef}>
 			<div className={styles.topPanel}>
-				<button onClick={cyclePersona} onTouchEnd={cyclePersona}>
+				<button
+					onTouchEnd={handlePersonaClick}
+					onMouseDown={handlePersonaClick}
+				>
 					{name}
 				</button>
 				<button onClick={toggleReply} onTouchEnd={toggleReply}>
@@ -170,8 +158,8 @@ export const BottomPanelActive: FC = () => {
 			</div>
 			<div className={styles.bottomPanel}>
 				<button
-					onClick={cyclePersona}
-					onTouchEnd={cyclePersona}
+					onTouchEnd={handlePersonaClick}
+					onMouseDown={handlePersonaClick}
 					className={styles.avatarButton}
 				>
 					<Avatar persona={persona} />

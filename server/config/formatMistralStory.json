@@ -1,0 +1,16 @@
+{
+	"systemFirstPrefix": "[INST] ",
+	"systemFirstSuffix": "",
+
+	"systemPrefix": "\n{{persona}}: ",
+	"inputPrefix": "\n{{persona}} ({{timestamp}}): ",
+	"outputPrefix": "\n{{persona}} ({{timestamp}}): ",
+
+	"systemSuffix": "",
+	"inputSuffix": "",
+	"outputSuffix": "",
+
+	"outputLastPrefix": " [/INST] {{persona}} ({{timestamp}}): ",
+
+	"nonInstructTemplate": true
+}

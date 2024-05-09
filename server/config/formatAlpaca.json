@@ -1,12 +1,11 @@
 {
-	"systemPrefix": "### Instruction:\n",
-	"inputPrefix": "### Input{{messageMeta}}:\n",
-	"outputPrefix": "### Response{{messageMeta}}:\n",
-	"outputLastPrefix": "",
+	"systemFirstPrefix": "### Instruction:\n",
+
+	"systemPrefix": "### Input:\n",
+	"inputPrefix": "### Input ({{persona}} {{timestamp}}):\n",
+	"outputPrefix": "### Response ({{persona}} {{timestamp}}):\n",
 
 	"systemSuffix": "\n",
 	"inputSuffix": "\n",
-	"outputSuffix": "\n",
-
-	"messageMeta": " ({{persona}} {{timestamp}})"
+	"outputSuffix": "\n"
 }

@@ -46,13 +46,15 @@ export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 		<div className={styles.container}>
 			<button onClick={handleLoad} className={styles.left}>
 				<div className={styles.top}>
-					{entry.personas.map((p) => (
-						<Avatar
-							persona={p.role}
-							className={styles.avatar}
-							chatId={entry.id}
-						/>
-					))}
+					{entry.personas
+						.filter((p) => p.role !== 'system')
+						.map((p) => (
+							<Avatar
+								persona={p.role}
+								className={styles.avatar}
+								chatId={entry.id}
+							/>
+						))}
 				</div>
 				<span className={styles.date}>
 					<FaCalendar /> {format(entry.lastMessage.date, 'do MMM, hh:mma')}

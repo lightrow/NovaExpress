@@ -1,18 +1,15 @@
 {
-	"maxContext": 18016,
-	"narratorPromptPosition": 3,
-	"charPromptPosition": 3,
-	"otherPromptsPosition": 3,
+	"maxContext": 19000,
+	"narratorPromptPosition": 4,
+	"charPromptPosition": 4,
+	"otherPromptsPosition": 4,
 	"enablePatience": false,
+	"enableSanitize": true,
 
-	"charName": "Assistant",
-	"userName": "User",
-	"narratorName": "Observer",
-
-	"___expl___": "Possible roles are: system, input, output. Used by internal direction messages, mostly invisible in chat. This depends on your model, i.e. whether it supports multiple 'system' messages. Leaving as 'input' is safest bet.",
-	"systemRoleAs": "input",
-	"___expl____": "Possible name ids are: narrator, user, char.",
-	"systemNameAs": "narrator",
+	"charName": "Xiu-4",
+	"userName": "User-1A",
+	"narratorName": "Observer-9F",
+	"systemName": "Director-0",
 
 	"directionTemplate": "(Direction: {{direction}})",
 	"eventStartTemplate": "Time is {{time}}. {{user}}'s calendar event \"{{event}}\" begins now.",
@@ -34,9 +31,13 @@
 		"10:00-19:00": "{{char}} distracts {{user}}."
 	},
 	"mood": {
-		"{{char}}'s replies are short, concise, terse. No more than 2 sentences.": 1.5,
-		"{{char}} is focused.": 1,
-		"{{char}} is playful, mischievous.": 1
+		"{{char}}'s replies are short, concise, terse. No more than 2 sentences.": 3,
+		"{{char}} is distracted.": 1,
+		"{{char}} is not amused.": 0.8,
+		"{{char}} is philosophical.": 0.8,
+		"{{char}} is surprised.": 0.4,
+		"{{char}} is tired.": 0.4,
+		"{{char}} is happy.": 0.5
 	},
 
 	"userPrompt": "Now speak from the {{user}}'s perspective. {{user}} speaks in a colloquial manner, terse, concise, a little cold. Write one sentence.",
