@@ -9,9 +9,9 @@ import {
 } from 'react';
 import { ChatMessage, SocketEventEnum } from '../../../../types';
 import useUpdatedRef from '../../hooks/useUpdatedRef';
+import { createNewMessage } from '../../lib/createNewMessage';
 import { useServerSocket } from '../socket';
 import { useGlobalStore } from '../store';
-import { createNewMessage } from '../../lib/createNewMessage';
 
 export const ActionsProvider: FC<PropsWithChildren> = ({ children }) => {
 	const actions = useCreateActions();
@@ -35,7 +35,6 @@ const useCreateActions = () => {
 
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const socket = useServerSocket();
-	const setIsInferring = useGlobalStore((s) => s.setIsInferring);
 	const setSpecial = useGlobalStore((s) => s.toggleSpecialMode);
 	const isSpecial = useGlobalStore((s) => s.isSpecialMode);
 	const inputValueRef = useUpdatedRef(inputValue);
@@ -70,7 +69,6 @@ const useCreateActions = () => {
 			type: SocketEventEnum.ADD_MESSAGE_AND_REPLY,
 			message: createNewMessage(persona, inputValueRef.current || '...'),
 		};
-		setIsInferring(true);
 		socket.send(JSON.stringify(message));
 		toggleIsSending(true);
 	};
@@ -80,7 +78,6 @@ const useCreateActions = () => {
 			type: SocketEventEnum.ADD_MESSAGE_AND_CONTINUE,
 			message: createNewMessage(persona, inputValueRef.current || ''),
 		};
-		setIsInferring(true);
 		socket.send(JSON.stringify(message));
 		toggleIsSending(true);
 	};
@@ -96,12 +93,10 @@ const useCreateActions = () => {
 
 	const continueFromLast = () => {
 		socket.send(JSON.stringify({ type: SocketEventEnum.CONTINUE }));
-		setIsInferring(true);
 	};
 
 	const retry = () => {
 		socket.send(JSON.stringify({ type: SocketEventEnum.RETRY }));
-		setIsInferring(true);
 	};
 
 	const stop = () => {

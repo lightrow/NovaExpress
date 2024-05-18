@@ -1,6 +1,7 @@
 import {
 	ChatListEntry,
 	ChatMessage,
+	SocketEventEnum,
 	SocketServerEventEnum,
 } from '../../../../types';
 import { maybeSanitizeMessages } from '../../lib/sanitizeMessages';
@@ -17,6 +18,13 @@ export class SocketClientService {
 	static onStreamEnded = () => {
 		this.sendPayloadToClients({
 			type: SocketServerEventEnum.STREAM_END,
+		});
+	};
+
+	static onSpecialToggle = (val: boolean) => {
+		this.sendPayloadToClients({
+			type: SocketEventEnum.TOGGLE_SPECIAL,
+			value: val,
 		});
 	};
 

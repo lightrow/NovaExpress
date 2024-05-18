@@ -1,24 +1,25 @@
-import Markdown from 'react-markdown';
+import classNames from 'classnames';
 import { FC, memo, useEffect, useRef, useState } from 'react';
-import { ChatMessage } from '../../../../types';
+import Markdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import { useUpdateEffect } from '../../hooks/useUpdateEffect';
 import { TTSGenerateQueue } from '../../lib/generateTts';
 import { playBlip } from '../../lib/playBlip';
 import wait from '../../utils/wait';
 import { Store } from '../RCTExposer/RCTExposer';
 import styles from './TextRenderer.module.css';
-import rehypeRaw from 'rehype-raw';
-import classNames from 'classnames';
+import { ChatMessage } from '../../../../types';
 
 export const TextRenderer: FC<{
-	message: ChatMessage;
+	message: string;
 	isNewMessage?: boolean;
 	className?: string;
-}> = memo(({ message, isNewMessage, className }) => {
+	persona: ChatMessage['persona'];
+}> = memo(({ message, persona, isNewMessage, className }) => {
 	const [renderedMessage, setRenderedMessage] = useState(
-		isNewMessage ? '' : message.messages[message.activeIdx]
+		isNewMessage ? '' : message
 	);
-	const messageToRenderRef = useRef(message.messages[message.activeIdx]);
+	const messageToRenderRef = useRef(message);
 	const renderedMessageRef = useRef(renderedMessage);
 	const isRenderingRef = useRef(false);
 
@@ -65,14 +66,14 @@ export const TextRenderer: FC<{
 			renderMessage(renderedMessageRef.current);
 			if (Store.soundMode === 'beep') {
 				try {
-					if (message.persona === 'char') {
+					if (persona === 'char') {
 						playBlip('high');
 					} else {
 						playBlip('low');
 					}
 				} catch (error) {}
 			}
-			if (message.persona !== 'char') {
+			if (persona !== 'char') {
 				await wait(10);
 			} else if (char === '.') {
 				await wait(100);
@@ -90,11 +91,11 @@ export const TextRenderer: FC<{
 	};
 
 	const handleEffect = () => {
-		messageToRenderRef.current = message.messages[message.activeIdx];
+		messageToRenderRef.current = message;
 		typeMessage();
 		const globalHotkeys = (event: KeyboardEvent) => {
 			if (event.key === 'Escape') {
-				renderMessage(message.messages[message.activeIdx]);
+				renderMessage(message);
 				TTSGenerateQueue.clear();
 			}
 		};
@@ -106,7 +107,7 @@ export const TextRenderer: FC<{
 
 	useUpdateEffect(() => {
 		if (!isNewMessage && !isRenderingRef.current) {
-			renderMessage(message.messages[message.activeIdx]);
+			renderMessage(message);
 			return;
 		}
 		handleEffect();
@@ -120,7 +121,7 @@ export const TextRenderer: FC<{
 	}, []);
 
 	const stopTyper = () => {
-		renderMessage(message.messages[message.activeIdx]);
+		renderMessage(message);
 	};
 
 	const prettifyMessage = (message: string) => {
@@ -173,11 +174,11 @@ export const TextRenderer: FC<{
 			.join('\n');
 	};
 
+	const prettified = prettifyMessage(renderedMessage);
+
 	return (
 		<div onClick={stopTyper} className={classNames(styles.typer, className)}>
-			<Markdown rehypePlugins={[rehypeRaw]}>
-				{prettifyMessage(renderedMessage)}
-			</Markdown>
+			<Markdown rehypePlugins={[rehypeRaw]}>{prettified}</Markdown>
 		</div>
 	);
 });

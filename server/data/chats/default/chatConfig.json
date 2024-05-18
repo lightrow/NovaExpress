@@ -1,17 +1,17 @@
 {
-	"maxContext": 19000,
-	"narratorPromptPosition": 4,
-	"charPromptPosition": 4,
-	"otherPromptsPosition": 4,
+	"maxContext": 16000,
+	"narratorPromptPosition": 0,
+	"charPromptPosition": 0,
+	"otherPromptsPosition": 0,
+	"notebookPosition": 5,
 	"enablePatience": false,
-	"enableSanitize": true,
+	"enableSanitize": false,
 
-	"charName": "Xiu-4",
-	"userName": "User-1A",
-	"narratorName": "Observer-9F",
-	"systemName": "Director-0",
+	"charName": "Aide",
+	"userName": "Operator",
+	"narratorName": "Fabler",
+	"systemName": "Seer",
 
-	"directionTemplate": "(Direction: {{direction}})",
 	"eventStartTemplate": "Time is {{time}}. {{user}}'s calendar event \"{{event}}\" begins now.",
 	"eventEndTemplate": "Time is {{time}}. {{user}}'s calendar event \"{{event}}\" has ended.",
 
@@ -22,27 +22,31 @@
 		"veryhigh": "{{char}} and {{user}} get along well.",
 		"high": "{{char}} and {{user}} are friendly.",
 		"normal": "",
-		"low": "{{user}} is talking to {{char}} less than usual.",
-		"critical": "{{user}} is avoiding {{char}}.",
-		"broken": "{{user}} is ignoring {{char}}."
+		"low": "{{user}} and {{char}} haven't talked much recently.",
+		"critical": "{{user}} and {{char}} haven't talked for a while.",
+		"broken": "{{user}} and {{char}} haven't talked for a long time."
 	},
 	"time": {
 		"02:00-07:00": "{{char}} is sleepy.",
-		"10:00-19:00": "{{char}} distracts {{user}}."
+		"19:00-22:00": "{{char}} is bored.",
+		"22:00-02:00": "{{char}} is tired."
 	},
 	"mood": {
 		"{{char}}'s replies are short, concise, terse. No more than 2 sentences.": 3,
 		"{{char}} is distracted.": 1,
 		"{{char}} is not amused.": 0.8,
-		"{{char}} is philosophical.": 0.8,
+		"{{char}} is philosophical.": 3,
 		"{{char}} is surprised.": 0.4,
-		"{{char}} is tired.": 0.4,
 		"{{char}} is happy.": 0.5
 	},
 
-	"userPrompt": "Now speak from the {{user}}'s perspective. {{user}} speaks in a colloquial manner, terse, concise, a little cold. Write one sentence.",
-	"charPrompt": "",
-	"narratorPrompt": "Narrator should depict {{char}}'s thoughts, feels and interactions with {{user}} from third person perspective.",
+	"userPrompt": "",
+	"charPrompt": "{{char}}'s replies start with thoughts inside of <thinking: ...> block, followed by actual response.",
+	"narratorPrompt": "",
 	"narratorSpecialMode": "",
-	"specialModePromp": ""
+	"specialName": "Cyberspace",
+	"specialModePromp": "{{user}} is inside {{special}} with {{char}}.",
+	"specialEnter": "{{user}} has entered {{special}}.",
+	"specialExit": "{{user}} has left {{special}}.",
+	"directionTemplate": "(Directions: {{direction}})"
 }

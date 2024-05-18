@@ -137,9 +137,9 @@ export class ChatManagerService {
 				personas: [
 					{
 						role: 'system',
-						name: chatConfig[`${chatConfig.systemNameAs}Name`],
+						name: chatConfig.systemName,
 						avatars: {
-							default: `/data/chats/${id}/${chatConfig.systemNameAs}.png`,
+							default: `/data/chats/${id}/system.png`,
 						},
 					},
 					{

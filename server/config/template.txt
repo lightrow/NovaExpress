@@ -1,1 +1,1 @@
-{{systemPrefix}}{{systemPrompt}}{{systemSuffix}}{{history}}
+{{promptPrefix}}{{systemPrompt}}{{promptSuffix}}{{history}}

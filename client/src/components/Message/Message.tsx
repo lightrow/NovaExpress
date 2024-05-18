@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { format } from 'date-fns/format';
-import { FC, memo, useEffect, useRef, useState } from 'react';
+import { FC, memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	FaCheck,
 	FaCheckCircle,
@@ -14,10 +14,12 @@ import {
 	FaUndo,
 } from 'react-icons/fa';
 import { FaVolumeHigh } from 'react-icons/fa6';
+import { PiCircuitry, PiNotePencil } from 'react-icons/pi';
 import { ChatMessage, SocketEventEnum } from '../../../../types';
 import { usePersonaName } from '../../hooks/usePersonaName';
 import { useUpdateEffect } from '../../hooks/useUpdateEffect';
 import { queueTTSText } from '../../lib/generateTts';
+import { splitMessageFromInsights } from '../../lib/splitMessageFromInsights';
 import { checkIsMobile } from '../../utils/checkIsMobile';
 import { BusEventEnum, EventBus } from '../../utils/eventBus';
 import { getScrollBottom } from '../../utils/getScrollBottom';
@@ -46,10 +48,14 @@ export const Message: FC<{
 	const editInput = useRef<HTMLTextAreaElement>(null);
 	const cutoffPosition = useGlobalStore((s) => s.cutoffPosition);
 	const name = usePersonaName(message.persona);
+	const [showInsights, setShowInsights] = useState(false);
 
 	const isNewMessage = isInferring && isLast && !isEdited && !isSending;
 
-	useTts(message, isNewMessage);
+	const { text, thought, note } = useMemo(
+		() => splitMessageFromInsights(message.messages[message.activeIdx]),
+		[message.messages[message.activeIdx]]
+	);
 
 	const beginEdit = () => {
 		setIsEditing(true);
@@ -60,28 +66,6 @@ export const Message: FC<{
 			});
 		}, 0);
 	};
-
-	useEffect(() => {
-		if (!isLast) {
-			return;
-		}
-		EventBus.on<number>(BusEventEnum.BOTTOM_PANEL_HEIGHT, (event) => {
-			setLastMessagePadding(event.data);
-		});
-		if (isEdited) {
-			return;
-		}
-
-		const observer = new ResizeObserver(([el]) => {
-			if (getScrollBottom() < 100) {
-				el.target.scrollIntoView({ behavior: 'smooth', block: 'end' });
-			}
-		});
-		observer.observe(ref.current!);
-		return () => {
-			observer.disconnect();
-		};
-	}, [isLast, isEdited]);
 
 	const togglePinMessage = () => {
 		const states = ['none', 'pinned', 'pruned'];
@@ -179,6 +163,34 @@ export const Message: FC<{
 		}
 	};
 
+	const toggleShowInsights = () => {
+		setShowInsights((s) => !s);
+	};
+
+	useTts(message, isNewMessage);
+
+	useEffect(() => {
+		if (!isLast) {
+			return;
+		}
+		EventBus.on<number>(BusEventEnum.BOTTOM_PANEL_HEIGHT, (event) => {
+			setLastMessagePadding(event.data);
+		});
+		if (isEdited) {
+			return;
+		}
+
+		const observer = new ResizeObserver(([el]) => {
+			if (getScrollBottom() < 100) {
+				el.target.scrollIntoView({ behavior: 'smooth', block: 'end' });
+			}
+		});
+		observer.observe(ref.current!);
+		return () => {
+			observer.disconnect();
+		};
+	}, [isLast, isEdited]);
+
 	useUpdateEffect(() => {
 		setIsEdited(false);
 	}, [message]);
@@ -244,7 +256,12 @@ export const Message: FC<{
 				) : (
 					<>
 						<div className={styles.message__top}>
-							<div className={styles.message__author}>
+							<div
+								className={styles.message__author}
+								onClick={toggleShowInsights}
+							>
+								{thought && <PiCircuitry />}
+								{note && <PiNotePencil />}
 								<span>{name}</span>
 							</div>
 							{index !== 0 && (
@@ -273,10 +290,35 @@ export const Message: FC<{
 							</div>
 						</div>
 						<div className={styles.message__text}>
-							{!message.messages[message.activeIdx] ? (
+							{showInsights && (
+								<div className={styles.insights}>
+									{thought && (
+										<TextRenderer
+											className={styles.thought}
+											message={thought}
+											isNewMessage={isNewMessage}
+											persona={message.persona}
+										/>
+									)}
+									{note && (
+										<TextRenderer
+											className={styles.note}
+											message={'Note: ' + note}
+											isNewMessage={isNewMessage}
+											persona={message.persona}
+										/>
+									)}
+								</div>
+							)}
+
+							{!text ? (
 								<DotsAnimation />
 							) : (
-								<TextRenderer message={message} isNewMessage={isNewMessage} />
+								<TextRenderer
+									message={text}
+									isNewMessage={isNewMessage}
+									persona={message.persona}
+								/>
 							)}
 						</div>
 					</>

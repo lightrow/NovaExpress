@@ -1,16 +1,27 @@
 {
-	"systemFirstPrefix": "<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>",
-	"systemFirstSuffix": "<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|USER_TOKEN|>",
+	"promptPrefix": "[INST] ",
+	"promptSuffix": "\n",
 
-	"systemPrefix": "{{persona}}: ",
-	"inputPrefix": "{{persona}} ({{timestamp}}): ",
-	"outputPrefix": "{{persona}} ({{timestamp}}): ",
+	"directionPrefix": "",
+	"narratorPrefix": "@{{persona}}:",
+	"narratorLastPrefix": "@{{persona}} ({{time}}):",
+	"personaPrefix": "@{{persona}} ({{timestamp}}):",
+	"personaLastPrefix": "@{{persona}} ({{time}}):",
 
-	"systemSuffix": "\n",
-	"inputSuffix": "\n",
-	"outputSuffix": "\n",
-	
-	"outputLastPrefix": "<|END_OF_TURN_TOKEN|><|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>{{persona}} ({{timestamp}}): ",
+	"directionSuffix": "",
+	"narratorSuffix": "",
+	"personaSuffix": "",
 
-	"nonInstructTemplate": true
+	"systemPrefix": "[INST] ",
+	"inputPrefix": "[INST] ",
+	"outputPrefix": "",
+
+	"inputSuffix": " [/INST]",
+	"systemSuffix": " [/INST]",
+	"outputSuffix": "</s>",
+
+	"directionRole": "input",
+	"narratorRole": "output",
+	"chatFormat": true,
+	"maintainInputOutputSequence": true
 }

@@ -55,6 +55,10 @@
 	border-radius: 0;
 }
 
+.avatar img {
+	border-radius: 0;
+}
+
 .input {
 	grid-area: input;
 	flex: 1;

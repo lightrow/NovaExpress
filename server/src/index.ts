@@ -1,11 +1,14 @@
+import cors from 'cors';
 import express from 'express';
 import http from 'http';
 import ws from 'ws';
-import './services/patience/patience.service';
-import './services/command/command.service';
-import { SocketServerService } from './services/socket-server/socket.server.service';
+import { createNewMessage } from './lib/createNewMessage';
 import { ChatManagerService } from './services/chat-manager/chat-manager.service';
-import cors from 'cors';
+import { ChatService } from './services/chat/chat.service';
+import './services/command/command.service';
+import './services/patience/patience.service';
+import './services/notebook/notebook.service';
+import { SocketServerService } from './services/socket-server/socket.server.service';
 
 const app = express();
 const server = http.createServer(app);
@@ -15,6 +18,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('../dist'));
 app.use('/data', express.static('./data'));
+app.use('/ping', (req, res) => {
+	ChatService.addMessageAndContinue(
+		createNewMessage(
+			'char',
+			'',
+			new Date().getTime(),
+			"{{user}} does something that draws {{char}}'s attention."
+		)
+	);
+	res.sendStatus(200);
+});
 
 app.get('/chats', (_, res) => {
 	const summary = ChatManagerService.getChatsSummary();

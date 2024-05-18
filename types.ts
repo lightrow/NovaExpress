@@ -6,6 +6,7 @@ export interface ChatMessage {
 	persona: 'user' | 'char' | 'narrator' | 'system';
 	state?: 'pinned' | 'pruned' | 'none';
 	affinity?: number;
+	direction?: string;
 }
 
 export enum SocketEventEnum {
@@ -41,10 +42,9 @@ export enum SocketServerEventEnum {
 export enum CommandEnum {
 	PLAY_MUSIC = 'playMusic',
 	PAUSE_MUSIC = 'pauseMusic',
-	ENABLE_RAIN = 'enableRain',
-	DISABLE_RAIN = 'disableRain',
 	ENABLE_SPECIAL = 'enableSpecial',
 	DISABLE_SPECIAL = 'disableSpecial',
+	STATUS = 'updateStatus',
 }
 
 export interface ChatListEntry {

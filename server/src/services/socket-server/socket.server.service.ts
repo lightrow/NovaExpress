@@ -1,13 +1,13 @@
 import ws from 'ws';
 import { SocketEventEnum, SocketServerEventEnum } from '../../../../types';
+import { Context } from '../../context';
 import { generate } from '../../lib/generate';
-import { replaceTemplates } from '../../lib/replaceTemplates';
 import { maybeSanitizeMessages } from '../../lib/sanitizeMessages';
-import { PatienceService } from '../patience/patience.service';
+import { ChatActionsService } from '../chat-action/chatAction.service';
+import { ChatManagerService } from '../chat-manager/chat-manager.service';
 import { ChatService } from '../chat/chat.service';
 import { LlmService } from '../llm/llm.service';
-import { Context } from '../../context';
-import { ChatManagerService } from '../chat-manager/chat-manager.service';
+import { PatienceService } from '../patience/patience.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
 
 export class SocketServerService {
@@ -62,13 +62,14 @@ export class SocketServerService {
 
 		const payload = JSON.parse(rawPayload.toString());
 
-		if (payload.message?.message) {
-			payload.message.message = replaceTemplates(payload.message.message);
-		}
-
 		console.info('Received: ' + payload.type);
 		switch (payload.type as SocketEventEnum) {
 			case SocketEventEnum.TOGGLE_SPECIAL:
+				ChatActionsService.narrateSystemAndMaybeTrigger(
+					payload.value
+						? '{{user}} has entered {{special}}.'
+						: '{{user}} has left {{special}}.'
+				);
 				Context.isSpecialMode = payload.value;
 				break;
 			case SocketEventEnum.ADD_MESSAGE_NO_REPLY:

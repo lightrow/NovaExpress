@@ -1,7 +1,6 @@
 import { ChatMessage } from '../../../types';
 import { ChatService } from '../services/chat/chat.service';
 import { LlmService } from '../services/llm/llm.service';
-import { NotebookService } from '../services/notebook/notebook.service';
 import { PromptService } from '../services/prompt/prompt.service';
 import { SocketClientService } from '../services/socket-client/socket.client.service';
 import { SocketServerService } from '../services/socket-server/socket.server.service';
@@ -22,12 +21,17 @@ export const generate = async (chat: ChatMessage[]) => {
 	const id = message.date;
 	const idx = message.activeIdx;
 	try {
-		const prompt = await PromptService.buildPrompt(maybeSanitizeMessages(chat));
-
 		const handleChunk = (chunk: string) => {
-			ChatService.updateMessageWithChunk(id, chunk);
+			try {
+				ChatService.updateMessageWithChunk(id, chunk);
+			} catch (error) {
+				throw Error('CHUNK_UPDATE_FAIL');
+			}
 		};
 
+		handleChunk('');
+
+		const prompt = await PromptService.buildPrompt(maybeSanitizeMessages(chat));
 		await LlmService.sendPrompt(prompt, handleChunk);
 		const promptMessage = ChatService.chat.find((m) => m.date === id);
 		EventBus.send({
@@ -38,7 +42,7 @@ export const generate = async (chat: ChatMessage[]) => {
 			console.info('No connections, sending push...');
 			sendPush(promptMessage);
 		}
-		NotebookService.parseAndUpdateNotebook(promptMessage);
+		ChatService.updateMessageWithChunk(id, '', true);
 		SocketClientService.onStreamEnded();
 		processing = false;
 	} catch (error) {

@@ -21,7 +21,7 @@
 	--font-message-date: 'Zilla Slab';
 
 	background-color: var(--color-bg2);
-	color: #6fa6ad;
+	color: var(--color-text);
 	color-scheme: dark light;
 
 	color-scheme: dark;
@@ -29,24 +29,24 @@
 	line-height: 1.5;
 	font-family: var(--font-body);
 }
-/*
+
 @media (prefers-color-scheme: light) {
 	:root {
-		--color-primary: #a33582;
+		--color-quote: #506d7d;
+		--color-primary: #034567;
 		--color-text: #3b3b3b;
 		--color-text-light: #1e1e1e;
-		--color-text-faint: #bebebe;
-		--color-emph: #a17193;
-		--color-bg-darkest: #dfdfdf;
-		--color-bg-darker: #dbdbdb;
-		--color-bg: #e6e6e6;
-		--color-bg2: #f0f0f0;
-		--color-bg3: #e6e6e6;
-		--color-bg4: #c0c0c0;
-		--color-highlight: #33b7c9;
+		--color-text-faint: #99968a;
+		--color-emph: #006856;
+		--color-bg-darkest: #E7E8E7;
+		--color-bg-darker: #E7E8E7;
+		--color-bg: #E7E8E7;
+		--color-bg2: #DBDDDC;
+		--color-bg3: #CFD1D0;
+		--color-bg4: #131111;
+		--color-highlight: #343031;
 	}
 }
-*/
 
 html {
 	font-size: 16px;

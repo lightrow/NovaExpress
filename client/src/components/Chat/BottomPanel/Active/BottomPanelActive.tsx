@@ -162,7 +162,7 @@ export const BottomPanelActive: FC = () => {
 					onMouseDown={handlePersonaClick}
 					className={styles.avatarButton}
 				>
-					<Avatar persona={persona} />
+					<Avatar persona={persona} className={styles.avatar} />
 				</button>
 
 				<TextInput

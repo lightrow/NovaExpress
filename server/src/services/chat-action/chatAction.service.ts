@@ -10,17 +10,11 @@ export class ChatActionsService {
 		const shouldTrigger = yesOrNo();
 		if (shouldTrigger) {
 			ChatService.addMessageAndReply(
-				createNewMessage(
-					asNarrator ? 'narrator' : 'system',
-					'*' + message + '*'
-				)
+				createNewMessage(asNarrator ? 'narrator' : 'system', message)
 			);
 		} else {
 			ChatService.addMessage(
-				createNewMessage(
-					asNarrator ? 'narrator' : 'system',
-					'*' + message + '*'
-				)
+				createNewMessage(asNarrator ? 'narrator' : 'system', message)
 			);
 		}
 	};

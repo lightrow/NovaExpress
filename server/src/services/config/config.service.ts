@@ -7,7 +7,30 @@ export class Config {
 	}
 
 	static get TemplateFormat() {
-		return JSON.parse(FileService.getConfigFile('format.json'));
+		return JSON.parse(FileService.getConfigFile('format.json')) as {
+			promptPrefix: string;
+			promptSuffix: string;
+
+			directionPrefix: string;
+			narratorPrefix: string;
+			personaPrefix: string;
+
+			directionSuffix: string;
+			narratorSuffix: string;
+			personaSuffix: string;
+
+			inputPrefix: string;
+			outputPrefix: string;
+			systemPrefix: string;
+			inputSuffix: string;
+			outputSuffix: string;
+			systemSuffix: string;
+
+			chatFormat: boolean;
+			maintainInputOutputSequence: boolean;
+			directionRole: 'input' | 'output' | 'system';
+			narratorRole: 'input' | 'output' | 'system';
+		};
 	}
 
 	static get Intro() {

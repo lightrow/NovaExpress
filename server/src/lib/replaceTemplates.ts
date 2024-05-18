@@ -1,6 +1,5 @@
 import { format } from 'date-fns';
 import { Config } from '../services/config/config.service';
-import { NotebookService } from '../services/notebook/notebook.service';
 
 export const replaceTemplates = (s: string) => {
 	if (!s) {
@@ -13,18 +12,16 @@ export const replaceTemplates = (s: string) => {
 		.replace(/{{char}}/g, Config.Chat.charName)
 		.replace(/{{narrator}}/g, Config.Chat.narratorName)
 		.replace(/{{system}}/g, Config.Chat.systemName)
+		.replace(/{{special}}/g, Config.Chat.specialName)
 		.replace(/{{time}}/g, format(new Date().getTime(), 'hh:mma'))
 		.replace(/{{weekday}}/g, format(new Date().getTime(), 'eeee'))
 		.replace(/{{date}}/g, format(new Date().getTime(), 'do MMMM'))
-		.replace(
-			/{{systemPrefix}}/g,
-			Config.TemplateFormat.systemFirstPrefix ||
-				Config.TemplateFormat.systemPrefix
-		)
-		.replace(
-			/{{systemSuffix}}/g,
-			Config.TemplateFormat.systemFirstSuffix ||
-				Config.TemplateFormat.systemSuffix
-		)
-		.replace(/{{notebook}}/g, NotebookService.Notebook);
+		.replace(/{{promptPrefix}}/g, Config.TemplateFormat.promptPrefix)
+		.replace(/{{promptSuffix}}/g, Config.TemplateFormat.promptSuffix)
+		.replace(/{{inputPrefix}}/g, Config.TemplateFormat.inputPrefix)
+		.replace(/{{inputSuffix}}/g, Config.TemplateFormat.inputSuffix)
+		.replace(/{{outputPrefix}}/g, Config.TemplateFormat.outputPrefix)
+		.replace(/{{outputSuffix}}/g, Config.TemplateFormat.outputSuffix)
+		.replace(/{{systemPrefix}}/g, Config.TemplateFormat.systemPrefix)
+		.replace(/{{systemSuffix}}/g, Config.TemplateFormat.systemSuffix);
 };

@@ -12,10 +12,15 @@ import { Avatar } from '../../Avatar/Avatar';
 import { useServerSocket } from '../../socket';
 import { Route, useGlobalStore } from '../../store';
 import { BusEventEnum, EventBus } from '../../../utils/eventBus';
+import { splitMessageFromInsights } from '../../../lib/splitMessageFromInsights';
 
 export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 	const socket = useServerSocket();
 	const setRoute = useGlobalStore((s) => s.setRoute);
+	const { text } = splitMessageFromInsights(
+		entry.lastMessage.messages[entry.lastMessage.activeIdx],
+		true
+	);
 
 	const handleDelete = () => {
 		socket.send(
@@ -50,6 +55,7 @@ export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 						.filter((p) => p.role !== 'system')
 						.map((p) => (
 							<Avatar
+								key={p.name}
 								persona={p.role}
 								className={styles.avatar}
 								chatId={entry.id}
@@ -59,7 +65,11 @@ export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 				<span className={styles.date}>
 					<FaCalendar /> {format(entry.lastMessage.date, 'do MMM, hh:mma')}
 				</span>
-				<TextRenderer className={styles.typer} message={entry.lastMessage} />
+				<TextRenderer
+					className={styles.typer}
+					message={text}
+					persona={entry.lastMessage.persona}
+				/>
 			</button>
 			<button onClick={handleDelete} className={styles.trash}>
 				<FaTrash />

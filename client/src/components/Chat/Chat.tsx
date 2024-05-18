@@ -29,7 +29,7 @@ export const Chat: FC = memo(() => {
 	}, []);
 
 	useEffect(() => {
-		if (messages.length !== messagesLengthRef.current) {
+		if (messages.length > messagesLengthRef.current) {
 			scrollToLastMessage();
 		}
 		const handleScroll = () => {

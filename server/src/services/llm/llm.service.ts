@@ -49,9 +49,15 @@ export class LlmService {
 					const chunk = decoder.decode(value);
 					if (chunk.startsWith('data')) {
 						try {
+							if (chunk.includes('"stop":true')) {
+								break;
+							}
 							const content = JSON.parse(chunk.replace('data: ', '')).content;
 							onContentChunkReceived(content);
 						} catch (error) {
+							if (error.message === 'CHUNK_UPDATE_FAIL') {
+								throw error;
+							}
 							console.warn('Parse gen data error: ', error);
 						}
 					}

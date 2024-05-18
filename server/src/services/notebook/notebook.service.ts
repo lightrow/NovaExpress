@@ -1,33 +1,47 @@
 import { format } from 'date-fns';
 import { ChatMessage } from '../../../../types';
 import { FileService } from '../fs/fs.service';
+import { EventBus, BusEventEnum } from '../../lib/eventBus';
+import { replaceTemplates } from '../../lib/replaceTemplates';
 
-export class NotebookService {
-	static NOTEBOOK_FILE = 'notebook.txt';
+class NotebookServiceFactory {
+	constructor() {
+		EventBus.on(BusEventEnum.MESSAGE_UPDATED, (event) => {
+			this.parseAndUpdateNotebook(event.data as ChatMessage);
+		});
+	}
 
-	static get Notebook() {
+	NOTEBOOK_FILE = 'notebook.txt';
+
+	get Notebook() {
 		const content = FileService.getDataFile(this.NOTEBOOK_FILE);
 		if (content === null) {
 			FileService.writeToDataFile(this.NOTEBOOK_FILE, '');
 		}
-		return content || '';
+		return (content || '').trim();
 	}
 
-	static parseAndUpdateNotebook = ({ messages, activeIdx }: ChatMessage) => {
-		const message = messages[activeIdx].toLowerCase();
-		const triggerWordPresent =
-			message.includes('note') ||
-			message.includes('notebook') ||
-			message.includes('noted') ||
-			message.includes('noting');
+	parseAndUpdateNotebook = ({
+		messages,
+		date,
+		activeIdx,
+		persona,
+	}: ChatMessage) => {
+		const message = messages[activeIdx];
+		const note = message.match(/<note: ([^>]*)>/)?.[1];
 
-		const content = message.match(/"(.*?)"/g)?.[0]?.slice(1, -1);
-
-		if (triggerWordPresent && content) {
+		if (note) {
 			FileService.appendToDataFile(
 				this.NOTEBOOK_FILE,
-				format(new Date(), 'do MMMM, hh:mma') + '\n' + content
+				replaceTemplates(
+					`{{${persona}}} noted on ${format(
+						date,
+						'do MMMM, hh:mma'
+					)}:\n${note}\n\n`
+				)
 			);
 		}
 	};
 }
+
+export const NotebookService = new NotebookServiceFactory();

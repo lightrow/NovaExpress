@@ -15,15 +15,17 @@ import { PromptService } from '../prompt/prompt.service';
 
 export class PatienceServiceFactory {
 	constructor() {
-		PromptService.addPromptInjection(this.checkInjectPatiencePrompt);
-		this.listenToEvent();
-		this.beginAutoTriggerCountdown();
+		setTimeout(() => {
+			PromptService.addPromptInjection(this.checkInjectPatiencePrompt);
+			this.listenToEvent();
+			this.beginAutoTriggerCountdown();
+		}, 0);
 	}
 
 	LONG_WAIT_MIN = 30 * 60 * 1000;
 	LONG_WAIT_MAX = 70 * 60 * 1000;
 	SHORT_WAIT_MIN = 3 * 60 * 1000;
-	SHORT_WAIT_MAX = 9 * 60 * 1000;
+	SHORT_WAIT_MAX = 6 * 60 * 1000;
 
 	MAX_SKIPS_TO_WAIT_WHEN_AWAY = 7;
 	MAX_TRIGGERS_MORNING = 2;
@@ -35,6 +37,7 @@ export class PatienceServiceFactory {
 
 	autoTriggerTimeout = null;
 	isAway = false;
+	triggers = 0;
 
 	checkInjectPatiencePrompt = (
 		chatSlice: ChatMessage[],
@@ -43,8 +46,7 @@ export class PatienceServiceFactory {
 		if (!Config.Chat.enablePatience) {
 			return;
 		}
-		const count = this.calculateIgnoredMessagesCount(fullChat);
-		if (count === 0 || chatSlice.slice(-1)[0].persona !== 'char') {
+		if (this.triggers === 0 || chatSlice.slice(-1)[0].persona !== 'char') {
 			return;
 		}
 		chatSlice.splice(
@@ -54,7 +56,7 @@ export class PatienceServiceFactory {
 				(
 					Config.Chat.patience?.default ||
 					"{{user}} hasn't responded to {{char}} {{count}} times."
-				).replace('{{count}}', count)
+				).replace('{{count}}', this.triggers)
 			)
 		);
 	};
@@ -126,15 +128,18 @@ export class PatienceServiceFactory {
 			}
 			console.info('{{char}} is impatient');
 			ChatService.addMessageAndContinue(createNewMessage('char'));
+			this.triggers++;
 			this.runPatienceCheck(cycle + 1);
 		}, timeout);
 	};
 
-	beginAutoTriggerCountdown = () => {
+	beginAutoTriggerCountdown = (awaitingReply?: boolean) => {
 		if (!Config.Chat.enablePatience) {
 			return;
 		}
-		this.runPatienceCheck(0);
+		this.triggers = 0;
+		awaitingReply && console.log('Awaiting reply');
+		this.runPatienceCheck(awaitingReply ? 1 : 0);
 	};
 
 	listenToEvent = () => {

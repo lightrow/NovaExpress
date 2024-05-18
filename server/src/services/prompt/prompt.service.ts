@@ -12,6 +12,8 @@ import { Config } from '../config/config.service';
 import { LlmService } from '../llm/llm.service';
 import { MoodService } from '../mood/mood.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
+import _ from 'lodash';
+import { NotebookService } from '../notebook/notebook.service';
 
 export class PromptService {
 	static injections: ((
@@ -39,7 +41,7 @@ export class PromptService {
 				(chatFiltered.length % Context.cutoffInterval) -
 				Context.cutoffKeep
 		);
-		let chatSlice = chatFiltered.slice(cutoffIndex);
+		let chatSlice = _.cloneDeep(chatFiltered.slice(cutoffIndex));
 		console.info(
 			`Adding last ${chatSlice.length} messages, starting from ${cutoffIndex}`
 		);
@@ -62,11 +64,7 @@ export class PromptService {
 		this.injectSeparators(chatSlice);
 
 		const formattedMessages = chatSlice.map((message, index) => {
-			return this.promptifyMessage(
-				message,
-				index === chatSlice.length - 1,
-				index === 0
-			);
+			return this.promptifyMessage(message, index === chatSlice.length - 1);
 		});
 
 		const prompt = replaceTemplates(
@@ -128,7 +126,7 @@ export class PromptService {
 	};
 
 	static injectSeparators = (chat: ChatMessage[]) => {
-		if (Config.TemplateFormat.nonInstructTemplate) {
+		if (!Config.TemplateFormat.maintainInputOutputSequence) {
 			// Most models expect INPUT to be followed by OUTPUT. Because we
 			// have more than two characters (Assistant, User, Narrator and
 			// System Narrator), but only two roles (user and assistant, or
@@ -159,7 +157,7 @@ export class PromptService {
 				chat.splice(
 					index,
 					0,
-					createNewMessage('user', '...', previousMessage.date + 1)
+					createNewMessage('system', '(Continue.)', previousMessage.date + 1)
 				);
 			}
 			if (
@@ -169,7 +167,7 @@ export class PromptService {
 				chat.splice(
 					index,
 					0,
-					createNewMessage('char', '...', previousMessage.date + 1)
+					createNewMessage('char', '(Understood.)', previousMessage.date + 1)
 				);
 			}
 		}
@@ -179,35 +177,84 @@ export class PromptService {
 		if (isLast) {
 			return 'output';
 		}
-		if (message.persona === 'user' || message.persona === 'narrator') {
-			return 'input';
+		if (!Config.TemplateFormat.chatFormat) {
+			return '';
 		}
-		if (message.persona === 'char') {
-			return 'output';
+		switch (message.persona) {
+			case 'char':
+				return 'output';
+			case 'user':
+				return 'input';
+			case 'narrator':
+				return Config.TemplateFormat.narratorRole || 'output';
+			case 'system':
+				return Config.TemplateFormat.directionRole || 'input';
 		}
-		return 'system';
 	};
 
-	static promptifyMessage = (
-		message: ChatMessage,
-		isLast?: boolean,
-		isFirst?: boolean
-	) => {
+	static promptifyMessage = (message: ChatMessage, isLast?: boolean) => {
 		const role = this.getMessageRole(message, isLast);
-		const tFormat = Config.TemplateFormat;
 
-		const getXFix = (role: string, xfix: 'Suffix' | 'Prefix') => {
-			let result = '';
-			if (isFirst && role !== 'system') {
-				// first system prompt is not a "message" and is handled elsewhere
-				result = tFormat[`${role}First${xfix}`];
-			} else if (isLast) {
-				result = tFormat[`${role}Last${xfix}`] || '';
-			}
+		const getXFix = (
+			role: string,
+			persona: ChatMessage['persona'],
+			xfix?: 'Suffix' | 'Prefix',
+			direction?: string
+		) => {
 			if (isLast && xfix === 'Suffix') {
-				return result;
+				return '';
 			}
-			return result || tFormat[`${role}${xfix}`] || '';
+
+			const getConfigValue = (type: string, xfix: string) => {
+				if (isLast) {
+					return (
+						Config.TemplateFormat[`${type}Last${xfix}`] ||
+						Config.TemplateFormat[`${type}${xfix}`] ||
+						''
+					);
+				}
+				return Config.TemplateFormat[`${type}${xfix}`] || '';
+			};
+
+			const personaXfix =
+				(() => {
+					const msg = message.messages[message.activeIdx];
+					if (msg === '(Continue.)' || msg === '(Understood.)') {
+						return '';
+					}
+					switch (persona) {
+						case 'user':
+						case 'char':
+							return getConfigValue('persona', xfix);
+						case 'narrator':
+							return getConfigValue('narrator', xfix);
+						case 'system':
+							return getConfigValue('direction', xfix);
+						default:
+							return '';
+					}
+				})() ?? '';
+			const roleXfix =
+				(() => {
+					switch (role) {
+						case 'input':
+							return getConfigValue('input', xfix);
+						case 'output':
+							return getConfigValue('output', xfix);
+						case 'system':
+							return getConfigValue('system', xfix);
+					}
+				})() ?? '';
+			if (xfix === 'Suffix') {
+				return personaXfix + roleXfix;
+			}
+			return (
+				roleXfix +
+				(direction
+					? Config.Chat.directionTemplate.replace('{{direction}}', direction)
+					: '') +
+				personaXfix
+			);
 		};
 
 		const names = {
@@ -219,15 +266,15 @@ export class PromptService {
 		const personaName = names[message.persona];
 
 		const strings = [
-			getXFix(role, 'Prefix'),
+			getXFix(role, message.persona, 'Prefix', message.direction),
 			message.messages[message.activeIdx],
-			getXFix(role, 'Suffix'),
+			getXFix(role, message.persona, 'Suffix'),
 		];
 
 		return strings
 			.join('')
-			.replace('{{persona}}', personaName)
-			.replace('{{timestamp}}', format(message.date, 'hh:mma'));
+			.replace(/{{persona}}/g, personaName)
+			.replace(/{{timestamp}}/g, format(message.date, 'hh:mma'));
 	};
 
 	static injectSubprompts = (
@@ -260,13 +307,13 @@ export class PromptService {
 			'';
 
 		const prompts = {
-			common: Context.isSpecialMode ? [Config.Chat.specialModePromp] : [],
+			common: Context.isSpecialMode
+				? [Config.Chat.specialModePromp]
+				: [timeBasedPrompt, moodPrompt, affinityPrompt],
 			narrator: Context.isSpecialMode
 				? [narratorSpecialPrompt]
 				: [narratorPrompt],
-			char: Context.isSpecialMode
-				? [Config.Chat.charPrompt]
-				: [Config.Chat.charPrompt, timeBasedPrompt, moodPrompt, affinityPrompt],
+			char: [lastMessage.persona === 'char' ? Config.Chat.charPrompt : null],
 			user: [userPrompt],
 		};
 		const promptStrings = Object.fromEntries(
@@ -283,32 +330,35 @@ export class PromptService {
 				.filter(([_, value]) => value)
 		);
 
-		const insertPromptIntoChat = (promptString: string, position: number) => {
+		const insertDirectionIntoChat = (
+			promptString: string,
+			position: number
+		) => {
 			if (!promptString) {
 				return;
 			}
-			chatSlice.splice(
-				chatSlice.length - position,
-				0,
-				createDirectionMessage(
-					promptString,
-					chatSlice[chatSlice.length - position - 1]?.date
-				)
-			);
+			const idx = Math.max(0, chatSlice.length - 1 - position);
+			chatSlice[idx].direction =
+				(chatSlice[idx].direction || '') + promptString;
 		};
 
-		insertPromptIntoChat(
+		insertDirectionIntoChat(
 			promptStrings.common,
 			Config.Chat.otherPromptsPosition
 		);
 
-		insertPromptIntoChat(promptStrings.char, Config.Chat.charPromptPosition);
+		insertDirectionIntoChat(promptStrings.char, Config.Chat.charPromptPosition);
 
-		insertPromptIntoChat(
+		insertDirectionIntoChat(
 			promptStrings.narrator,
 			Config.Chat.narratorPromptPosition
 		);
 
-		insertPromptIntoChat(promptStrings.user, 1);
+		insertDirectionIntoChat(promptStrings.user, 1);
+
+		insertDirectionIntoChat(
+			NotebookService.Notebook,
+			Config.Chat.notebookPosition
+		);
 	};
 }
