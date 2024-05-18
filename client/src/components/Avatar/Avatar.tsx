@@ -67,7 +67,7 @@ export const Avatar: FC<{
 					<feTurbulence
 						type='turbulence'
 						baseFrequency='0.05'
-						seed={getHash(persona) + Math.random() * 100}
+						seed={getHash(id)}
 						numOctaves='8'
 						result='turbulence'
 					/>
