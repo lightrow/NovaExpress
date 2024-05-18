@@ -55,7 +55,10 @@ export const Avatar: FC<{
 	}, [persona, affinity, chatId]);
 
 	return (
-		<div className={classNames(styles.avatarContainer, className)}>
+		<div
+			className={classNames(styles.avatarContainer, className)}
+			style={{ filter: `url(#noise${id})` }}
+		>
 			<svg
 				width='200'
 				height='200'
@@ -63,10 +66,10 @@ export const Avatar: FC<{
 				xmlns='http://www.w3.org/2000/svg'
 				className={styles.back}
 			>
-				<filter id={id}>
+				<filter id={`back${id}`}>
 					<feTurbulence
 						type='turbulence'
-						baseFrequency='0.05'
+						baseFrequency='0.06'
 						seed={getHash(id)}
 						numOctaves='8'
 						result='turbulence'
@@ -79,25 +82,23 @@ export const Avatar: FC<{
 						yChannelSelector='G'
 					/>
 				</filter>
-			</svg>
-			<img src={serverUrl + img} className={styles.avatar} />
-			<img
-				src={serverUrl + img}
-				className={styles.back}
-				style={{ filter: `url(#${id})` }}
-			/>
-			<svg id='filter' className={styles.svg}>
-				<filter id='noise'>
-					<feTurbulence baseFrequency='0.60' />
+				<filter id={`noise${id}`}>
+					<feTurbulence baseFrequency='1' />
 					<feColorMatrix
 						in='colorNoise'
 						type='matrix'
-						values='.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 1 0'
+						values='1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 0 0 1 0 0'
 					/>
 					<feComposite operator='in' in2='SourceGraphic' result='monoNoise' />
 					<feBlend in='SourceGraphic' in2='monoNoise' mode='multiply' />
 				</filter>
 			</svg>
+			<img src={serverUrl + img} className={styles.avatar} />
+			<img
+				src={serverUrl + img}
+				className={styles.back}
+				style={{ filter: `url(#back${id})` }}
+			/>
 		</div>
 	);
 });
