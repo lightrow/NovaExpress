@@ -6,8 +6,8 @@ import { createNewMessage } from './lib/createNewMessage';
 import { ChatManagerService } from './services/chat-manager/chat-manager.service';
 import { ChatService } from './services/chat/chat.service';
 import './services/command/command.service';
-import './services/patience/patience.service';
 import './services/notebook/notebook.service';
+import './services/patience/patience.service';
 import { SocketServerService } from './services/socket-server/socket.server.service';
 
 const app = express();
@@ -19,14 +19,20 @@ app.use(express.json());
 app.use(express.static('../dist'));
 app.use('/data', express.static('./data'));
 app.use('/ping', (req, res) => {
-	ChatService.addMessageAndContinue(
-		createNewMessage(
-			'char',
-			'',
-			new Date().getTime(),
-			"{{user}} does something that draws {{char}}'s attention."
-		)
-	);
+	const message = req.query.q;
+	if (message) {
+		ChatService.addMessageAndReply(createNewMessage('user', message as string));
+	} else {
+		ChatService.addMessageAndContinue(
+			createNewMessage(
+				'char',
+				'',
+				new Date().getTime(),
+				"{{user}} does something that draws {{char}}'s attention."
+			)
+		);
+	}
+
 	res.sendStatus(200);
 });
 

@@ -31,8 +31,7 @@ export const generate = async (chat: ChatMessage[]) => {
 
 		handleChunk('');
 
-		const prompt = await PromptService.buildPrompt(maybeSanitizeMessages(chat));
-		await LlmService.sendPrompt(prompt, handleChunk);
+		await LlmService.sendPrompt(chat, handleChunk);
 		const promptMessage = ChatService.chat.find((m) => m.date === id);
 		EventBus.send({
 			key: BusEventEnum.MESSAGE_UPDATED,

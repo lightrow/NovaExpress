@@ -1,9 +1,9 @@
 {
 	"maxContext": 16000,
-	"narratorPromptPosition": 0,
-	"charPromptPosition": 0,
-	"otherPromptsPosition": 0,
-	"notebookPosition": 5,
+	"narratorPromptPosition": 2,
+	"charPromptPosition": 2,
+	"otherPromptsPosition": 2,
+	"notebookPosition": 2,
 	"enablePatience": false,
 	"enableSanitize": false,
 
@@ -32,6 +32,7 @@
 		"22:00-02:00": "{{char}} is tired."
 	},
 	"mood": {
+		"": 4,
 		"{{char}}'s replies are short, concise, terse. No more than 2 sentences.": 3,
 		"{{char}} is distracted.": 1,
 		"{{char}} is not amused.": 0.8,

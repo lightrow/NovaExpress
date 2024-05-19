@@ -68,7 +68,7 @@ export class PromptService {
 
 		const tokens = await LlmService.tokenize(prompt);
 		if (tokens.length >= Config.Chat.maxContext) {
-			const offset = Math.floor(chatSlice.length / 2);
+			const offset = Context.cutoffIndex + Math.floor(chatSlice.length / 2);
 			this.setCutoffIndex(offset);
 			if (offset === 0) {
 				console.error(
@@ -102,7 +102,7 @@ export class PromptService {
 				)
 			) {
 				const todayMessage: ChatMessage = createDirectionMessage(
-					'Today is ' + format(messages[i].date, 'do MMMM') + '.',
+					'Today is ' + format(messages[i].date, 'cccc do MMMM') + '.',
 					startOfDay(messages[i].date).getTime() + this.DAY_START_SHIFT
 				);
 				messages.splice(i, 0, todayMessage);
@@ -184,7 +184,11 @@ export class PromptService {
 		}
 	};
 
-	static promptifyMessage = (message: ChatMessage, isLast?: boolean) => {
+	static promptifyMessage = (
+		message: ChatMessage,
+		isLast?: boolean,
+		noRoles?: boolean
+	) => {
 		const role = this.getMessageRole(message, isLast);
 
 		const getXFix = (
@@ -238,12 +242,13 @@ export class PromptService {
 					}
 				})() ?? '';
 			if (xfix === 'Suffix') {
-				return personaXfix + roleXfix;
+				return personaXfix + (noRoles ? '' : roleXfix);
 			}
 			return (
-				roleXfix +
+				(noRoles ? '' : roleXfix) +
 				(direction
-					? Config.Chat.directionTemplate.replace('{{direction}}', direction)
+					? Config.Chat.directionTemplate.replace('{{direction}}', direction) +
+					  ' '
 					: '') +
 				personaXfix
 			);
@@ -301,7 +306,12 @@ export class PromptService {
 		const prompts = {
 			common: Context.isSpecialMode
 				? [Config.Chat.specialModePromp]
-				: [timeBasedPrompt, moodPrompt, affinityPrompt],
+				: [
+						'{{user}} is not in {{special}}. {{char}} cannot interact with {{user}} physically.',
+						timeBasedPrompt,
+						moodPrompt,
+						affinityPrompt,
+				  ],
 			narrator: Context.isSpecialMode
 				? [narratorSpecialPrompt]
 				: [narratorPrompt],
@@ -331,7 +341,9 @@ export class PromptService {
 			}
 			const idx = Math.max(0, chatSlice.length - 1 - position);
 			chatSlice[idx].direction =
-				(chatSlice[idx].direction || '') + promptString;
+				(chatSlice[idx].direction || '').trim() +
+				(chatSlice[idx].direction ? ' ' : '') +
+				promptString.trim();
 		};
 
 		insertDirectionIntoChat(

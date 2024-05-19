@@ -22,11 +22,13 @@ export const createNewMessage = (
 
 export const createDirectionMessage = (
 	message: string,
-	date = new Date().getTime()
+	date = new Date().getTime(),
+	direction?: string
 ) => {
 	return createNewMessage(
 		'system',
 		Config.Chat.directionTemplate.replace('{{direction}}', message),
-		date
+		date,
+		direction
 	);
 };

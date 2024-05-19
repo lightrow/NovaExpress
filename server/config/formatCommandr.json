@@ -1,6 +1,6 @@
 {
-	"promptPrefix": "### Instruction:\n>",
-	"promptSuffix": "\n",
+	"promptPrefix": "<|START_OF_TURN_TOKEN|><|SYSTEM_TOKEN|>",
+	"promptSuffix": "<|END_OF_TURN_TOKEN|>",
 
 	"directionPrefix": "@{{persona}}:",
 	"narratorPrefix": "@{{persona}}:",
@@ -12,13 +12,13 @@
 	"narratorSuffix": "",
 	"personaSuffix": "",
 
-	"systemPrefix": "### Input:\n",
-	"inputPrefix": "### Input:\n",
-	"outputPrefix": "### Response:\n",
+	"systemPrefix": "<|START_OF_TURN_TOKEN|><|USER_TOKEN|>",
+	"inputPrefix": "<|START_OF_TURN_TOKEN|><|USER_TOKEN|>",
+	"outputPrefix": "<|START_OF_TURN_TOKEN|><|CHATBOT_TOKEN|>",
 
-	"inputSuffix": "\n",
-	"systemSuffix": "\n",
-	"outputSuffix": "\n",
+	"inputSuffix": "<|END_OF_TURN_TOKEN|>",
+	"systemSuffix": "<|END_OF_TURN_TOKEN|>",
+	"outputSuffix": "<|END_OF_TURN_TOKEN|>",
 
 	"directionRole": "input",
 	"narratorRole": "output",
