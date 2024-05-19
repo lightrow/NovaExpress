@@ -28,10 +28,15 @@
 	max-width: var(--width);
 	height: 0.5rem;
 	border-radius: 2px;
-	background-color: var(--color-bg3);
 	cursor: pointer;
 	opacity: 0;
 	transition: opacity 200ms;
+}
+
+@media (max-width: 768px) {
+	.track {
+		background-color: var(--color-bg3);
+	}
 }
 
 .thumb {

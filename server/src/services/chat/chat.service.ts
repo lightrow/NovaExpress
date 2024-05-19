@@ -9,7 +9,7 @@ import { ChatManagerService } from '../chat-manager/chat-manager.service';
 import { FileService } from '../fs/fs.service';
 import { PatienceService } from '../patience/patience.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
-import { getRandomThinkStart } from '../../lib/getRandomThinkStart';
+import { getThinkMessageStart } from '../../lib/getRandomThinkStart';
 
 export class ChatService {
 	static addMessageAndContinue = debounce(
@@ -33,7 +33,7 @@ export class ChatService {
 		message.messages = message.messages.map((m) => replaceTemplates(m));
 		const chat = this.chat;
 		if (message.persona === 'char' && !message.messages[message.activeIdx]) {
-			message.messages[message.activeIdx] = getRandomThinkStart();
+			message.messages[message.activeIdx] = getThinkMessageStart();
 		}
 		if (message.persona === 'char' && AffinityService.lastAffinity) {
 			message.affinity = AffinityService.lastAffinity.amount;
@@ -54,7 +54,7 @@ export class ChatService {
 		const messageToRetry = chat[chat.length - 1];
 		messageToRetry.messages = [
 			...(messageToRetry.messages || []),
-			messageToRetry.persona === 'char' ? getRandomThinkStart() : '',
+			messageToRetry.persona === 'char' ? getThinkMessageStart() : '',
 		];
 		messageToRetry.activeIdx = messageToRetry.messages.length - 1;
 		this.editMessage(messageToRetry);

@@ -290,7 +290,7 @@ export const Message: FC<{
 							</div>
 						</div>
 						<div className={styles.message__text}>
-							{showInsights && (
+							{showInsights && (thought || note) && (
 								<div className={styles.insights}>
 									{thought && (
 										<TextRenderer
