@@ -48,7 +48,7 @@ export class SocketClientService {
 			chat: maybeSanitizeMessages(payload),
 		});
 		// we no longer know, until next prompt.
-		PromptService.setCutoffInterval(1000);
+		PromptService.setCutoffIndex(0);
 		this.onCutoffPositionMeasured(0);
 	};
 

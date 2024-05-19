@@ -1,6 +1,5 @@
 export const Context = {
-	cutoffInterval: 1000,
-	cutoffKeep: 500,
+	cutoffIndex: 0,
 	isSpecialMode: false,
 	status: 'ready',
 };

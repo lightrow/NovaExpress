@@ -29,21 +29,16 @@ export class PromptService {
 	static DAY_START_SHIFT = 6 * 60 * 60 * 1000; // assume day starts at 06:00AM, otherwise AI gets confused
 
 	static buildPrompt = async (chat: ChatMessage[], recursive?: boolean) => {
-		if (chat.length % Context.cutoffInterval === 0 && !recursive) {
+		if (chat.length <= Context.cutoffIndex) {
 			// Reset the cutoff params to let them be reevaluated anew.
 			// Can only be done at time of context shift.
-			this.setCutoffInterval(1000);
+			this.setCutoffIndex(0);
 		}
 		const chatFiltered = chat.filter((m) => m.state !== 'pruned');
-		const cutoffIndex = Math.max(
-			0,
-			chatFiltered.length -
-				(chatFiltered.length % Context.cutoffInterval) -
-				Context.cutoffKeep
-		);
-		let chatSlice = _.cloneDeep(chatFiltered.slice(cutoffIndex));
+
+		let chatSlice = _.cloneDeep(chatFiltered.slice(Context.cutoffIndex));
 		console.info(
-			`Adding last ${chatSlice.length} messages, starting from ${cutoffIndex}`
+			`Adding last ${chatSlice.length} messages, starting from ${Context.cutoffIndex}`
 		);
 		const pinnedMessages = chatFiltered.filter(
 			(chatMessage) =>
@@ -73,31 +68,28 @@ export class PromptService {
 
 		const tokens = await LlmService.tokenize(prompt);
 		if (tokens.length >= Config.Chat.maxContext) {
-			this.setCutoffInterval(
-				Math.min(chatSlice.length, Context.cutoffInterval) - 20
-			);
-			if (Context.cutoffInterval <= 0) {
-				this.setCutoffInterval(1000);
+			const offset = Math.floor(chatSlice.length / 2);
+			this.setCutoffIndex(offset);
+			if (offset === 0) {
 				console.error(
 					`Not enough context to continue (current: ${Config.Chat.maxContext}). Try increasing maxContext or reduce system prompt size/amount of pinned messages.`
 				);
 				throw Error('OUT_OF_CONTEXT');
 			}
 			console.info(
-				`Hit context limit, adjusting cutoff to: ${Context.cutoffInterval}/${Context.cutoffKeep} and retrying`
+				`Hit context limit, adjusting cutoff to: ${Context.cutoffIndex} and retrying`
 			);
 			return this.buildPrompt(chat, true);
 		}
 		console.log('\n\n############### PROMPT #################\n\n');
 		console.log(`PROMPT (${tokens.length}):...\n${prompt}`);
-		SocketClientService.onCutoffPositionMeasured(cutoffIndex);
+		SocketClientService.onCutoffPositionMeasured(Context.cutoffIndex);
 
 		return prompt;
 	};
 
-	static setCutoffInterval = (idx: number) => {
-		Context.cutoffInterval = idx;
-		Context.cutoffKeep = Math.floor(idx / 2);
+	static setCutoffIndex = (idx: number) => {
+		Context.cutoffIndex = idx;
 	};
 
 	static injectDayChangeMesssages(messages: ChatMessage[]) {
