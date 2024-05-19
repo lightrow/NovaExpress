@@ -34,10 +34,10 @@ class NotebookServiceFactory {
 			FileService.appendToDataFile(
 				this.NOTEBOOK_FILE,
 				replaceTemplates(
-					`{{${persona}}} noted on ${format(
+					`${!this.Notebook ? "{{char}}'s notes:\n" : ''}* ${format(
 						date,
 						'do MMMM, hh:mma'
-					)}:\n${note}\n\n`
+					)}:${note}\n`
 				)
 			);
 		}

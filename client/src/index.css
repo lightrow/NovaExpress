@@ -24,7 +24,6 @@
 	color: var(--color-text);
 	color-scheme: dark light;
 
-	color-scheme: dark;
 	font-weight: 400;
 	line-height: 1.5;
 	font-family: var(--font-body);
@@ -36,15 +35,15 @@
 		--color-primary: #034567;
 		--color-text: #3b3b3b;
 		--color-text-light: #1e1e1e;
-		--color-text-faint: #99968a;
+		--color-text-faint: #979797;
 		--color-emph: #006856;
-		--color-bg-darkest: #E7E8E7;
-		--color-bg-darker: #E7E8E7;
-		--color-bg: #E7E8E7;
-		--color-bg2: #DBDDDC;
-		--color-bg3: #CFD1D0;
-		--color-bg4: #131111;
-		--color-highlight: #343031;
+		--color-bg-darkest: #ffffff;
+		--color-bg-darker: #f1f1f1;
+		--color-bg: #eff0ef;
+		--color-bg2: #e6e7e7;
+		--color-bg3: #d6dad8;
+		--color-bg4: #cfd1d0;
+		--color-highlight: #487453;
 	}
 }
 

@@ -1,6 +1,6 @@
 {
-	"promptPrefix": "",
-	"promptSuffix": "\nUSER: ",
+	"promptPrefix": "### Instruction:\n>",
+	"promptSuffix": "\n",
 
 	"directionPrefix": "@{{persona}}:",
 	"narratorPrefix": "@{{persona}}:",
@@ -12,13 +12,13 @@
 	"narratorSuffix": "",
 	"personaSuffix": "",
 
-	"systemPrefix": "USER: ",
-	"inputPrefix": "USER: ",
-	"outputPrefix": " ASSISTANT: ",
+	"systemPrefix": "### Input:\n",
+	"inputPrefix": "### Input:\n",
+	"outputPrefix": "### Response:\n",
 
-	"inputSuffix": "",
-	"systemSuffix": "",
-	"outputSuffix": "</s>\n",
+	"inputSuffix": "\n",
+	"systemSuffix": "\n",
+	"outputSuffix": "\n",
 
 	"directionRole": "input",
 	"narratorRole": "output",
