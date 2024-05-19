@@ -3,9 +3,8 @@ export const splitMessageFromInsights = (
 	ignoreThought?: boolean
 ) => {
 	const text = message
-		.replace(/<thinking: $/g, '*Thinking...*')
-		.replace(/<thinking: [^>]*(>){0,1}/g, '')
-		.replace(/<note: [^>]*(>){0,1}/g, '');
+		.replace(/<thi[^>]*>{0,1}/g, '')
+		.replace(/<not[^>]*>{0,1}/g, '');
 
 	const thought = ignoreThought
 		? ''

@@ -306,12 +306,7 @@ export class PromptService {
 		const prompts = {
 			common: Context.isSpecialMode
 				? [Config.Chat.specialModePromp]
-				: [
-						'{{user}} is not in {{special}}. {{char}} cannot interact with {{user}} physically.',
-						timeBasedPrompt,
-						moodPrompt,
-						affinityPrompt,
-				  ],
+				: [timeBasedPrompt, moodPrompt, affinityPrompt],
 			narrator: Context.isSpecialMode
 				? [narratorSpecialPrompt]
 				: [narratorPrompt],

@@ -312,7 +312,15 @@ export const Message: FC<{
 							)}
 
 							{!text ? (
-								<DotsAnimation />
+								thought ? (
+									<TextRenderer
+										message={'*Thinking...*'}
+										isNewMessage={isNewMessage}
+										persona={message.persona}
+									/>
+								) : (
+									<DotsAnimation />
+								)
 							) : (
 								<TextRenderer
 									message={text}
