@@ -57,6 +57,9 @@ export interface AppStore {
 
 	isAway: boolean;
 	toggleIsAway: (val?: boolean) => void;
+
+	alwaysShowInsights: boolean;
+	toggleAlwaysShowInsights: (val?: boolean) => void;
 }
 
 export const useGlobalStore = create(
@@ -176,6 +179,13 @@ export const useGlobalStore = create(
 			toggleIsAway: (val) =>
 				set((state) => {
 					state.isAway = val !== undefined ? val : !state.isAway;
+				}),
+
+			alwaysShowInsights: false,
+			toggleAlwaysShowInsights: (val) =>
+				set((state) => {
+					state.alwaysShowInsights =
+						val !== undefined ? val : !state.alwaysShowInsights;
 				}),
 		})),
 		{

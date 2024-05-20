@@ -46,6 +46,7 @@ export const Message: FC<{
 	const [lastMessagePadding, setLastMessagePadding] = useState(96);
 	const isInferring = useGlobalStore((s) => s.isInferring);
 	const isSending = useGlobalStore((s) => s.isSending);
+	const alwaysShowInsights = useGlobalStore((s) => s.alwaysShowInsights);
 	const editInput = useRef<HTMLTextAreaElement>(null);
 	const cutoffPosition = useGlobalStore((s) => s.cutoffPosition);
 	const name = usePersonaName(message.persona);
@@ -175,7 +176,10 @@ export const Message: FC<{
 	}, [message]);
 
 	const showThought =
-		(showInsights || (!text && !(isInferring && isLast))) && thought;
+		(showInsights ||
+			alwaysShowInsights ||
+			(!text && !(isInferring && isLast))) &&
+		thought;
 
 	return (
 		<div

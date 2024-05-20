@@ -36,6 +36,12 @@ export class SocketServerService {
 		);
 		client.send(
 			JSON.stringify({
+				type: SocketServerEventEnum.CUTOFF_POSITION,
+				position: Context.cutoffIndex,
+			})
+		);
+		client.send(
+			JSON.stringify({
 				type: SocketEventEnum.TOGGLE_SPECIAL,
 				value: Context.isSpecialMode,
 			})

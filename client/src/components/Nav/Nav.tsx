@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import { FC, memo, useCallback } from 'react';
-import { BsMoonStars, BsMoonStarsFill } from 'react-icons/bs';
-import { FaComment, FaMapPin } from 'react-icons/fa';
+import { FaBell, FaComment, FaEye, FaEyeSlash, FaMapPin, FaMoon } from 'react-icons/fa';
 import { FaGear, FaRegRectangleList } from 'react-icons/fa6';
 import { SocketEventEnum } from '../../../../types';
 import { BusEventEnum, EventBus } from '../../utils/eventBus';
@@ -13,7 +12,11 @@ export const Nav: FC = memo(() => {
 	const currentRoute = useGlobalStore((s) => s.route);
 	const setRoute = useGlobalStore((s) => s.setRoute);
 	const isAway = useGlobalStore((s) => s.isAway);
+	const alwaysShowInsights = useGlobalStore((s) => s.alwaysShowInsights);
 	const toggleIsAway = useGlobalStore((s) => s.toggleIsAway);
+	const toggleAlwaysShowInsights = useGlobalStore(
+		(s) => s.toggleAlwaysShowInsights
+	);
 	const socket = useServerSocket();
 
 	const routes = {
@@ -38,6 +41,10 @@ export const Nav: FC = memo(() => {
 			})
 		);
 		toggleIsAway();
+	};
+
+	const handleInsightsClick = () => {
+		toggleAlwaysShowInsights();
 	};
 
 	const purge = () => {
@@ -79,11 +86,18 @@ export const Nav: FC = memo(() => {
 					);
 				})}
 				<div className={styles.separator} />
+				<button className={styles.routeButton} onClick={handleInsightsClick}>
+					{alwaysShowInsights ? (
+						<FaEye color='var(--color-text)' />
+					) : (
+						<FaEyeSlash color='var(--color-text-faint)' />
+					)}
+				</button>
 				<button className={styles.routeButton} onClick={handleIsAwayClick}>
 					{isAway ? (
-						<BsMoonStarsFill color='var(--color-highlight)' />
+						<FaMoon color='var(--color-text)' />
 					) : (
-						<BsMoonStars color='var(--color-text-faint)' />
+						<FaBell color='var(--color-text-faint)' />
 					)}
 				</button>
 			</div>
