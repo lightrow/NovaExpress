@@ -9,6 +9,7 @@ import { ChatService } from '../chat/chat.service';
 import { LlmService } from '../llm/llm.service';
 import { PatienceService } from '../patience/patience.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
+import { Config } from '../config/config.service';
 
 export class SocketServerService {
 	static connections: ws[] = [];
@@ -66,9 +67,7 @@ export class SocketServerService {
 		switch (payload.type as SocketEventEnum) {
 			case SocketEventEnum.TOGGLE_SPECIAL:
 				ChatActionsService.narrateSystemAndMaybeTrigger(
-					payload.value
-						? '{{user}} has entered {{special}}.'
-						: '{{user}} has left {{special}}.'
+					payload.value ? Config.Chat.specialEnter : Config.Chat.specialExit
 				);
 				Context.isSpecialMode = payload.value;
 				break;

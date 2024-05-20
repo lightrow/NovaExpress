@@ -45,9 +45,9 @@
 	"charPrompt": "{{char}}'s replies start with thoughts inside of <thinking: ...> block, followed by actual response.",
 	"narratorPrompt": "",
 	"narratorSpecialMode": "",
-	"specialName": "Cyberspace",
-	"specialModePromp": "{{user}} is inside {{special}} with {{char}}.",
-	"specialEnter": "{{user}} has entered {{special}}.",
-	"specialExit": "{{user}} has left {{special}}.",
+	"specialName": "Funny joker mode",
+	"specialModePromp": "{{special}} is active.",
+	"specialEnter": "{{special}} enabled.",
+	"specialExit": "{{special}} disabled.",
 	"directionTemplate": "(Directions: {{direction}})"
 }
