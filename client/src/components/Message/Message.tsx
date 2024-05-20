@@ -195,7 +195,8 @@ export const Message: FC<{
 		setIsEdited(false);
 	}, [message]);
 
-	const showThought = (showInsights || (!text && !isInferring)) && thought;
+	const showThought =
+		(showInsights || (!text && !(isInferring && isLast))) && thought;
 
 	return (
 		<div
@@ -309,14 +310,14 @@ export const Message: FC<{
 								/>
 							)}
 							{!text ? (
-								thought && isInferring ? (
+								thought && isInferring && isLast ? (
 									<TextRenderer
 										message={'*Thinking...*'}
 										isNewMessage={isNewMessage}
 										persona={message.persona}
 									/>
 								) : (
-									isInferring && <DotsAnimation />
+									isInferring && isLast && <DotsAnimation />
 								)
 							) : (
 								<TextRenderer

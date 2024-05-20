@@ -194,6 +194,10 @@
 	opacity: 0.6;
 }
 
+.insight:first-child {
+	margin-top: 0;
+}
+
 .note * {
 	color: var(--color-primary) !important;
 	font-style: italic;
