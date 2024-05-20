@@ -45,10 +45,10 @@ export const BottomPanelInactive: FC = () => {
 				) : (
 					<>
 						<button className={styles.button} onClick={quickSubmitNarrator}>
-							<Avatar persona='narrator' />
+							<Avatar plain persona='narrator' />
 						</button>
 						<button className={styles.button} onClick={quickSubmitChar}>
-							<Avatar persona='char' />
+							<Avatar plain persona='char' />
 						</button>
 						<button className={styles.button} onClick={retry}>
 							<FaSync />

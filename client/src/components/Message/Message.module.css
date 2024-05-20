@@ -26,11 +26,12 @@
 	padding: 1rem;
 	padding-right: 0.25rem;
 	padding-bottom: 0.5rem;
-	gap: 0.5rem;
+	gap: 1rem;
 	user-select: none;
 }
 
 .message__index {
+	margin-bottom: 0.5rem;
 	color: var(--color-text-faint);
 	font-size: 0.8rem;
 	line-height: 1rem;
@@ -144,44 +145,6 @@
 	gap: 0.5rem;
 }
 
-.variantsPanel {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-top: 0.25rem;
-	border-radius: 0.5rem;
-}
-
-.buttonVariantSeparator {
-	width: 1px;
-}
-
-.buttonVariant:first-child {
-	border-top-right-radius: 0;
-	border-bottom-right-radius: 0;
-}
-
-.buttonVariant:last-child {
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-}
-
-.buttonVariant {
-	flex: 1;
-	align-items: center;
-	justify-content: center;
-	min-height: 1.5rem;
-	padding: 0;
-	background: var(--color-bg3);
-	color: var(--color-text-faint);
-}
-
-.buttonVariant.variantDisabled {
-	cursor: not-allowed;
-	opacity: 0.3;
-	pointer-events: none;
-}
-
 .insight {
 	width: fit-content;
 	margin: 0.5rem 0;
@@ -189,10 +152,6 @@
 	border-radius: 0.5rem;
 	background: var(--color-bg);
 	opacity: 0.6;
-}
-
-.insight:first-child {
-	margin-top: 0;
 }
 
 .note * {

@@ -1,10 +1,11 @@
 import classNames from 'classnames';
-import { FC, memo, useId, useMemo } from 'react';
+import { FC, memo, useId, useMemo, useState } from 'react';
 import { ChatMessage } from '../../../../types';
 import { useChatData } from '../../hooks/useChatData';
 import { Store } from '../RCTExposer/RCTExposer';
 import styles from './Avatar.module.css';
 import { useGlobalStore } from '../store';
+import { uniqueId } from 'lodash';
 
 function getHash(input) {
 	var hash = 0,
@@ -21,8 +22,9 @@ export const Avatar: FC<{
 	affinity?: ChatMessage['affinity'];
 	className?: string;
 	chatId?: number;
-}> = memo(({ persona, affinity, className, chatId }) => {
-	const id = useId();
+	plain?: boolean;
+}> = memo(({ persona, affinity, className, chatId, plain }) => {
+	const [id] = useState(Math.floor(Math.random() * 10000000));
 	const { personas } = useChatData(chatId);
 	const serverUrl = useGlobalStore((s) => s.serverUrl);
 
@@ -56,49 +58,58 @@ export const Avatar: FC<{
 
 	return (
 		<div
-			className={classNames(styles.avatarContainer, className)}
-			style={{ filter: `url(#noise${id})` }}
+			className={classNames(
+				styles.avatarContainer,
+				{ [styles.plain]: plain },
+				className
+			)}
 		>
-			<svg
-				width='200'
-				height='200'
-				viewBox='0 0 100 100'
-				xmlns='http://www.w3.org/2000/svg'
-				className={styles.back}
-			>
-				<filter id={`back${id}`}>
-					<feTurbulence
-						type='turbulence'
-						baseFrequency='0.06'
-						seed={getHash(id)}
-						numOctaves='8'
-						result='turbulence'
+			{!plain && (
+				<svg
+					width='200'
+					height='200'
+					viewBox='0 0 100 100'
+					xmlns='http://www.w3.org/2000/svg'
+					className={styles.back}
+				>
+					<filter id={`back${id}`}>
+						<feTurbulence
+							type='turbulence'
+							baseFrequency='0.06'
+							seed={id}
+							numOctaves='8'
+							result='turbulence'
+						/>
+						<feDisplacementMap
+							in2='turbulence'
+							in='SourceGraphic'
+							scale='15'
+							xChannelSelector='R'
+							yChannelSelector='G'
+						/>
+					</filter>
+					<filter id={`noise${id}`}>
+						<feTurbulence baseFrequency='1' />
+						<feColorMatrix
+							in='colorNoise'
+							type='matrix'
+							values='1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 0 0 1 0 0'
+						/>
+						<feComposite operator='in' in2='SourceGraphic' result='monoNoise' />
+						<feBlend in='SourceGraphic' in2='monoNoise' mode='multiply' />
+					</filter>
+				</svg>
+			)}
+			<div style={!plain ? { filter: `url(#noise${id})` } : {}}>
+				<img src={serverUrl + img} className={styles.avatar} />
+				{!plain && (
+					<img
+						src={serverUrl + img}
+						className={styles.back}
+						style={{ filter: `url(#back${id})` }}
 					/>
-					<feDisplacementMap
-						in2='turbulence'
-						in='SourceGraphic'
-						scale='15'
-						xChannelSelector='R'
-						yChannelSelector='G'
-					/>
-				</filter>
-				<filter id={`noise${id}`}>
-					<feTurbulence baseFrequency='1' />
-					<feColorMatrix
-						in='colorNoise'
-						type='matrix'
-						values='1 1 1 0 0 1 1 1 0 0 1 1 1 0 0 0 0 1 0 0'
-					/>
-					<feComposite operator='in' in2='SourceGraphic' result='monoNoise' />
-					<feBlend in='SourceGraphic' in2='monoNoise' mode='multiply' />
-				</filter>
-			</svg>
-			<img src={serverUrl + img} className={styles.avatar} />
-			<img
-				src={serverUrl + img}
-				className={styles.back}
-				style={{ filter: `url(#back${id})` }}
-			/>
+				)}
+			</div>
 		</div>
 	);
 });

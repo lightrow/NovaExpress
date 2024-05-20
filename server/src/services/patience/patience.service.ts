@@ -163,8 +163,7 @@ export class PatienceServiceFactory {
 					);
 				}
 				ChatActionsService.narrateSystemAndMaybeTrigger(
-					replaceTemplates(message),
-					true
+					replaceTemplates(message)
 				);
 			}
 			prevContent = newContent;

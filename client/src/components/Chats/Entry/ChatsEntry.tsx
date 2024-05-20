@@ -55,6 +55,7 @@ export const ChatsEntry: FC<{ entry: ChatListEntry }> = ({ entry }) => {
 						.filter((p) => p.role !== 'system')
 						.map((p) => (
 							<Avatar
+								plain
 								key={p.name}
 								persona={p.role}
 								className={styles.avatar}

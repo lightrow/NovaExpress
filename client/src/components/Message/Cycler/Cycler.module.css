@@ -1,0 +1,38 @@
+
+.variantsPanel {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 0.25rem;
+	border-radius: 0.5rem;
+}
+
+.buttonVariantSeparator {
+	width: 1px;
+}
+
+.buttonVariant:first-child {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.buttonVariant:last-child {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.buttonVariant {
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	min-height: 1.5rem;
+	padding: 0;
+	background: var(--color-bg3);
+	color: var(--color-text-faint);
+}
+
+.buttonVariant.variantDisabled {
+	cursor: not-allowed;
+	opacity: 0.3;
+	pointer-events: none;
+}

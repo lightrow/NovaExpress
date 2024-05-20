@@ -31,6 +31,7 @@ import { useGlobalStore } from '../store';
 import { DotsAnimation } from './DotsAnimation/DotsAnimation';
 import styles from './Message.module.css';
 import { useTts } from './useTts';
+import { Cycler } from './Cycler/Cycler';
 
 export const Message: FC<{
 	index: number;
@@ -127,30 +128,8 @@ export const Message: FC<{
 		queueTTSText(message.messages[message.activeIdx]);
 	};
 
-	const chooseNext = () => {
+	const onCycle = () => {
 		setIsEdited(true);
-		socket.send(
-			JSON.stringify({
-				type: SocketEventEnum.EDIT_MESSAGE,
-				message: {
-					...message,
-					activeIdx: message.activeIdx + 1,
-				} as ChatMessage,
-			})
-		);
-	};
-
-	const choosePrev = () => {
-		setIsEdited(true);
-		socket.send(
-			JSON.stringify({
-				type: SocketEventEnum.EDIT_MESSAGE,
-				message: {
-					...message,
-					activeIdx: message.activeIdx - 1,
-				} as ChatMessage,
-			})
-		);
 	};
 
 	const handleKeyDown = (e: KeyboardEvent) => {
@@ -216,26 +195,7 @@ export const Message: FC<{
 			<div className={styles.message__left}>
 				<Avatar persona={message.persona} affinity={message.affinity} />
 				{message.messages.length > 1 && (
-					<div className={styles.variantsPanel}>
-						<button
-							onClick={choosePrev}
-							className={classNames(styles.buttonVariant, {
-								[styles.variantDisabled]: message.activeIdx === 0,
-							})}
-						>
-							<FaChevronLeft />
-						</button>
-						<div className={styles.buttonVariantSeparator} />
-						<button
-							onClick={chooseNext}
-							className={classNames(styles.buttonVariant, {
-								[styles.variantDisabled]:
-									message.activeIdx >= message.messages.length - 1,
-							})}
-						>
-							<FaChevronRight />
-						</button>
-					</div>
+					<Cycler message={message} onCycle={onCycle} />
 				)}
 				<span className={styles.message__index}>#{index}</span>
 			</div>
