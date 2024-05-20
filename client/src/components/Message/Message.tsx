@@ -14,7 +14,7 @@ import {
 	FaUndo,
 } from 'react-icons/fa';
 import { FaVolumeHigh } from 'react-icons/fa6';
-import { PiCircuitry, PiNotePencil } from 'react-icons/pi';
+import { LuCircuitBoard, LuGanttChartSquare } from 'react-icons/lu';
 import { ChatMessage, SocketEventEnum } from '../../../../types';
 import { usePersonaName } from '../../hooks/usePersonaName';
 import { useUpdateEffect } from '../../hooks/useUpdateEffect';
@@ -259,14 +259,14 @@ export const Message: FC<{
 				) : (
 					<>
 						<div className={styles.message__top}>
-							<div
+							<span
 								className={styles.message__author}
 								onClick={toggleShowInsights}
 							>
-								{thought && <PiCircuitry />}
-								{note && <PiNotePencil />}
-								<span>{name}</span>
-							</div>
+								{thought && <LuCircuitBoard />}
+								{note && <LuGanttChartSquare />}
+								{name}
+							</span>
 							{index !== 0 && (
 								<span className={styles.message__date}>
 									{format(message.date, 'do MMM, hh:mma')}

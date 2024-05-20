@@ -26,6 +26,6 @@
 
 .input {
 	align-self: stretch;
-	font-size: 0.8rem;
+	font-size: 0.8rem !important;
 	font-family: var(--font-monospace);
 }

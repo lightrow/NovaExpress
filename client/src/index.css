@@ -15,7 +15,7 @@
 	--width: 800px;
 
 	--font-title: var(--font-monospace);
-	--font-monospace: 'DM Mono', monospace;
+	--font-monospace: 'Cascadia Code', monospace;
 	--font-body: 'Zilla Slab', Helvetica, Arial, sans-serif;
 	--font-message: 'Lora', Helvetica, Arial, sans-serif;
 	--font-message-date: 'Zilla Slab';

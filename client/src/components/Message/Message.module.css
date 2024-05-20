@@ -66,13 +66,10 @@
 	background: var(--color-bg3);
 	color: var(--color-highlight);
 	font-weight: 100;
-	font-size: 0.9rem;
+	font-size: 14px;
 	font-family: var(--font-monospace);
-	letter-spacing: 0.2rem;
-	text-align: right;
-	text-align: center;
+	letter-spacing: 0.15rem;
 	text-transform: uppercase;
-	vertical-align: middle;
 	cursor: pointer;
 	opacity: 0.5;
 	user-select: none;

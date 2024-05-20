@@ -1,5 +1,5 @@
 {
-	"maxContext": 16000,
+	"maxContext": 8192,
 	"narratorPromptPosition": 2,
 	"charPromptPosition": 2,
 	"otherPromptsPosition": 2,
