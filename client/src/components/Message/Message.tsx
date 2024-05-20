@@ -290,27 +290,22 @@ export const Message: FC<{
 							</div>
 						</div>
 						<div className={styles.message__text}>
-							{showInsights && (thought || note) && (
-								<div className={styles.insights}>
-									{thought && (
-										<TextRenderer
-											className={styles.thought}
-											message={thought}
-											isNewMessage={isNewMessage}
-											persona={message.persona}
-										/>
-									)}
-									{note && (
-										<TextRenderer
-											className={styles.note}
-											message={'Note: ' + note}
-											isNewMessage={isNewMessage}
-											persona={message.persona}
-										/>
-									)}
-								</div>
+							{showInsights && thought && (
+								<TextRenderer
+									className={classNames(styles.insight, styles.thought)}
+									message={thought}
+									isNewMessage={isNewMessage}
+									persona={message.persona}
+								/>
 							)}
-
+							{note && (
+								<TextRenderer
+									className={classNames(styles.insight, styles.note)}
+									message={'Note: ' + note}
+									isNewMessage={isNewMessage}
+									persona={message.persona}
+								/>
+							)}
 							{!text ? (
 								thought ? (
 									<TextRenderer

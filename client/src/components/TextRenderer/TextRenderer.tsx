@@ -9,6 +9,7 @@ import wait from '../../utils/wait';
 import { Store } from '../RCTExposer/RCTExposer';
 import styles from './TextRenderer.module.css';
 import { ChatMessage } from '../../../../types';
+import rehypeHighlight from 'rehype-highlight';
 
 export const TextRenderer: FC<{
 	message: string;
@@ -178,7 +179,9 @@ export const TextRenderer: FC<{
 
 	return (
 		<div onClick={stopTyper} className={classNames(styles.typer, className)}>
-			<Markdown rehypePlugins={[rehypeRaw]}>{prettified}</Markdown>
+			<Markdown rehypePlugins={[rehypeHighlight, rehypeRaw]}>
+				{prettified}
+			</Markdown>
 		</div>
 	);
 });

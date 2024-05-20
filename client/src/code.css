@@ -1,0 +1,185 @@
+@media (prefers-color-scheme: dark) {
+	/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+
+	/*
+
+Atom One Dark With support for ReasonML by Gidi Morris, based off work by Daniel Gamage
+
+Original One Dark Syntax theme from https://github.com/atom/one-dark-syntax
+
+*/
+	.hljs {
+		color: #abb2bf;
+	}
+	.hljs-keyword,
+	.hljs-operator {
+		color: #f92672;
+	}
+	.hljs-pattern-match {
+		color: #f92672;
+	}
+	.hljs-pattern-match .hljs-constructor {
+		color: #61aeee;
+	}
+	.hljs-function {
+		color: #61aeee;
+	}
+	.hljs-function .hljs-params {
+		color: #a6e22e;
+	}
+	.hljs-function .hljs-params .hljs-typing {
+		color: #fd971f;
+	}
+	.hljs-module-access .hljs-module {
+		color: #7e57c2;
+	}
+	.hljs-constructor {
+		color: #e2b93d;
+	}
+	.hljs-constructor .hljs-string {
+		color: #9ccc65;
+	}
+	.hljs-comment,
+	.hljs-quote {
+		color: #b18eb1;
+		font-style: italic;
+	}
+	.hljs-doctag,
+	.hljs-formula {
+		color: #c678dd;
+	}
+	.hljs-section,
+	.hljs-name,
+	.hljs-selector-tag,
+	.hljs-deletion,
+	.hljs-subst {
+		color: #e06c75;
+	}
+	.hljs-literal {
+		color: #56b6c2;
+	}
+	.hljs-string,
+	.hljs-regexp,
+	.hljs-addition,
+	.hljs-attribute,
+	.hljs-meta .hljs-string {
+		color: #98c379;
+	}
+	.hljs-built_in,
+	.hljs-title.class_,
+	.hljs-class .hljs-title {
+		color: #e6c07b;
+	}
+	.hljs-attr,
+	.hljs-variable,
+	.hljs-template-variable,
+	.hljs-type,
+	.hljs-selector-class,
+	.hljs-selector-attr,
+	.hljs-selector-pseudo,
+	.hljs-number {
+		color: #d19a66;
+	}
+	.hljs-symbol,
+	.hljs-bullet,
+	.hljs-link,
+	.hljs-meta,
+	.hljs-selector-id,
+	.hljs-title {
+		color: #61aeee;
+	}
+	.hljs-emphasis {
+		font-style: italic;
+	}
+	.hljs-strong {
+		font-weight: bold;
+	}
+	.hljs-link {
+		text-decoration: underline;
+	}
+}
+
+@media (prefers-color-scheme: light) {
+	/*!
+  Theme: a11y-light
+  Author: @ericwbailey
+  Maintainer: @ericwbailey
+
+  Based on the Tomorrow Night Eighties theme: https://github.com/isagalaev/highlight.js/blob/master/src/styles/tomorrow-night-eighties.css
+*/
+
+	.hljs {
+		color: #545454;
+	}
+
+	/* Comment */
+	.hljs-comment,
+	.hljs-quote {
+		color: #696969;
+	}
+
+	/* Red */
+	.hljs-variable,
+	.hljs-template-variable,
+	.hljs-tag,
+	.hljs-name,
+	.hljs-selector-id,
+	.hljs-selector-class,
+	.hljs-regexp,
+	.hljs-deletion {
+		color: #d91e18;
+	}
+
+	/* Orange */
+	.hljs-number,
+	.hljs-built_in,
+	.hljs-literal,
+	.hljs-type,
+	.hljs-params,
+	.hljs-meta,
+	.hljs-link {
+		color: #aa5d00;
+	}
+
+	/* Yellow */
+	.hljs-attribute {
+		color: #aa5d00;
+	}
+
+	/* Green */
+	.hljs-string,
+	.hljs-symbol,
+	.hljs-bullet,
+	.hljs-addition {
+		color: #008000;
+	}
+
+	/* Blue */
+	.hljs-title,
+	.hljs-section {
+		color: #007faa;
+	}
+
+	/* Purple */
+	.hljs-keyword,
+	.hljs-selector-tag {
+		color: #7928a1;
+	}
+
+	.hljs-emphasis {
+		font-style: italic;
+	}
+
+	.hljs-strong {
+		font-weight: bold;
+	}
+}

@@ -184,15 +184,9 @@
 	pointer-events: none;
 }
 
-.insights {
-	display: flex;
-	flex-direction: column;
-	margin: 0.25rem 0;
-	gap: 0.5rem;
-}
-
-.insights > div {
+.insight {
 	width: fit-content;
+	margin: 0.5rem 0;
 	padding: 0.25rem 0.75rem;
 	border-radius: 0.5rem;
 	background: var(--color-bg);
@@ -201,6 +195,12 @@
 
 .note * {
 	color: var(--color-primary) !important;
+	font-style: italic;
+}
+
+.thought * {
+	color: var(--color-emph) !important;
+	font-style: italic;
 }
 
 @media (max-width: 768px) {
