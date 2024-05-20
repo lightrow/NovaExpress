@@ -140,14 +140,6 @@ export const useSpeech = () => {
 				.replace(/\sexclamation/gi, '!')
 				.replace(/\speriod/gi, '.')
 				.replace(/\squestion mark/gi, '?')
-				.replace(/princess/gi, 'hime-sama')
-				.replace(/big sis/gi, 'onee-san')
-				.replace(/affirmative/gi, 'ryokai')
-				.replace(/yes(?![^\ ]*\w)/gi, 'hai')
-				.replace(/no(?![^\ ]*\w)/gi, 'iie')
-				.replace(/good morning/gi, 'ohayou')
-				.replace(/good evening/gi, 'konbanwa')
-				.replace(/goodnight/gi, 'oyasumi')
 		);
 		setTimeout(() => {
 			if (!textAreaRef.current) {

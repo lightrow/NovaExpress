@@ -65,6 +65,7 @@
 	border-radius: 0.25rem;
 	background: var(--color-bg3);
 	color: var(--color-highlight);
+	font-weight: 100;
 	font-size: 0.9rem;
 	font-family: var(--font-monospace);
 	letter-spacing: 0.2rem;
