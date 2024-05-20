@@ -1,4 +1,4 @@
-export const getThinkMessageStart = () => {
+export const getNewMessageStart = () => {
 	// const words = [
 	// 	'...',
 	// 	'',
@@ -31,6 +31,8 @@ export const getThinkMessageStart = () => {
 	// 	'Oh',
 	// ];
 
+	// return '<thinking: ';
 	// return '<thinking: ' + words[Math.floor(Math.random() * words.length)];
-	return '<thinking: ';
+	// Example seems enough, depends on the model
+	return '';
 };

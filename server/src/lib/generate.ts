@@ -29,6 +29,7 @@ export const generate = async (chat: ChatMessage[]) => {
 			}
 		};
 
+		// trigger isInferring on clients a bit sooner
 		handleChunk('');
 
 		await LlmService.sendPrompt(chat, handleChunk);

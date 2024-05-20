@@ -195,6 +195,8 @@ export const Message: FC<{
 		setIsEdited(false);
 	}, [message]);
 
+	const showThought = (showInsights || (!text && !isInferring)) && thought;
+
 	return (
 		<div
 			ref={ref}
@@ -290,7 +292,7 @@ export const Message: FC<{
 							</div>
 						</div>
 						<div className={styles.message__text}>
-							{showInsights && thought && (
+							{showThought && (
 								<TextRenderer
 									className={classNames(styles.insight, styles.thought)}
 									message={thought}
@@ -307,14 +309,14 @@ export const Message: FC<{
 								/>
 							)}
 							{!text ? (
-								thought ? (
+								thought && isInferring ? (
 									<TextRenderer
 										message={'*Thinking...*'}
 										isNewMessage={isNewMessage}
 										persona={message.persona}
 									/>
 								) : (
-									<DotsAnimation />
+									isInferring && <DotsAnimation />
 								)
 							) : (
 								<TextRenderer

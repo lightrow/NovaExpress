@@ -28,6 +28,17 @@
 	font-size: 0.9rem;
 }
 
+.typer code {
+	font-family: var(--font-monospace);
+}
+
+.typer p > code {
+	padding: 0px 0.25rem;
+	border-radius: 0.25rem;
+	background-color: var(--color-bg);
+	color: var(--color-quote);
+}
+
 .command {
 	color: var(--color-emph);
 }

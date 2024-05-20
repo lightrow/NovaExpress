@@ -1,6 +1,6 @@
 import { ChatMessage } from '../../../types';
 import { Config } from '../services/config/config.service';
-import { getThinkMessageStart } from './getRandomThinkStart';
+import { getNewMessageStart } from './getNewMessageStart';
 
 export const createNewMessage = (
 	persona: ChatMessage['persona'],
@@ -9,7 +9,7 @@ export const createNewMessage = (
 	direction?: string
 ) => {
 	if (persona === 'char' && !message) {
-		message = getThinkMessageStart();
+		message = getNewMessageStart();
 	}
 	return {
 		activeIdx: 0,

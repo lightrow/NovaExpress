@@ -3,13 +3,13 @@ import { ChatMessage } from '../../../../types';
 import { createNewMessage } from '../../lib/createNewMessage';
 import { BusEventEnum, EventBus } from '../../lib/eventBus';
 import { generate } from '../../lib/generate';
+import { getNewMessageStart } from '../../lib/getNewMessageStart';
 import { replaceTemplates } from '../../lib/replaceTemplates';
 import { AffinityService } from '../affinity/affinity.service';
 import { ChatManagerService } from '../chat-manager/chat-manager.service';
 import { FileService } from '../fs/fs.service';
 import { PatienceService } from '../patience/patience.service';
 import { SocketClientService } from '../socket-client/socket.client.service';
-import { getThinkMessageStart } from '../../lib/getRandomThinkStart';
 
 export class ChatService {
 	static addMessageAndContinue = debounce(
@@ -33,7 +33,7 @@ export class ChatService {
 		message.messages = message.messages.map((m) => replaceTemplates(m));
 		const chat = this.chat;
 		if (message.persona === 'char' && !message.messages[message.activeIdx]) {
-			message.messages[message.activeIdx] = getThinkMessageStart();
+			message.messages[message.activeIdx] = getNewMessageStart();
 		}
 		if (message.persona === 'char' && AffinityService.lastAffinity) {
 			message.affinity = AffinityService.lastAffinity.amount;
@@ -54,7 +54,7 @@ export class ChatService {
 		const messageToRetry = chat[chat.length - 1];
 		messageToRetry.messages = [
 			...(messageToRetry.messages || []),
-			messageToRetry.persona === 'char' ? getThinkMessageStart() : '',
+			messageToRetry.persona === 'char' ? getNewMessageStart() : '',
 		];
 		messageToRetry.activeIdx = messageToRetry.messages.length - 1;
 		this.editMessage(messageToRetry);
@@ -86,24 +86,24 @@ export class ChatService {
 			'let me know',
 			'could you',
 		];
-
-		if (
-			final &&
-			replyTriggers.find((trigger) =>
-				messageToUpdate.messages[messageIdx].includes(trigger)
-			)
-		) {
-			PatienceService.beginAutoTriggerCountdown(true);
+		if (final) {
+			if (
+				replyTriggers.find((trigger) =>
+					messageToUpdate.messages[messageIdx].includes(trigger)
+				)
+			) {
+				PatienceService.beginAutoTriggerCountdown(true);
+			}
+		} else {
+			const chat = this.chat;
+			SocketClientService.onMessageChunkReceived(messageToUpdate);
+			chat.splice(
+				chat.findIndex((m) => m.date === messageId),
+				1,
+				messageToUpdate
+			);
+			ChatService.saveChat(chat);
 		}
-
-		const chat = this.chat;
-		SocketClientService.onMessageChunkReceived(messageToUpdate);
-		chat.splice(
-			chat.findIndex((m) => m.date === messageId),
-			1,
-			messageToUpdate
-		);
-		ChatService.saveChat(chat);
 	};
 
 	static editMessage = (message: ChatMessage) => {
